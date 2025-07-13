@@ -1,5 +1,7 @@
 import pandas as pd
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, TIMESTAMP
+from sqlalchemy.dialects.postgresql import TIMESTAMP
+
 
 # Google Sheet-ID
 sheet_id = "1PIZZOn5x9xRqX1LJbvi2cKbdQUz8t38Dy8pgVUyNkck"
@@ -26,7 +28,7 @@ for i, gid in enumerate(tab_gids):
     tab = tab_names[i]
     csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
     print(f"Lade Tab '{tab}' mit gid '{gid}'...")
-    df = pd.read_csv(csv_url, encoding='latin1')  # Google Sheets Export hat meist latin1 Encoding
+    df = pd.read_csv(csv_url, encoding='utf-8')  # Google Sheets Export nutzt meist UTF-8
     
     # Leere Zeilen komplett entfernen
     df = df.dropna(how="all")
@@ -47,9 +49,7 @@ for i, gid in enumerate(tab_gids):
     # Tab-Name als Spalte hinzufügen
     df["tab_name"] = tab
     
-    # Säubere String-Spalten (ersetze unlesbare Zeichen)
-    for col in df.select_dtypes(include=["object"]).columns:
-        df[col] = df[col].astype(str).apply(lambda x: x.encode('utf-8', errors='replace').decode('utf-8'))
+    # Entferne String-Spalten-Säuberung, da utf-8 bereits gesetzt ist
     
     # In DB schreiben — wenn erstes Mal, dann replace, sonst append
     if i == 0:
@@ -57,7 +57,19 @@ for i, gid in enumerate(tab_gids):
     else:
         if_exists_option = 'append'
     
-    df.to_sql("gym_log", engine, schema=db_schema, if_exists=if_exists_option, index=False)
+    # Datentyp Mapping für Timestamp
+    dtype_mapping = {}
+    if "tmstmp" in df.columns:
+        dtype_mapping["tmstmp"] = TIMESTAMP()
+    
+    df.to_sql(
+        "gym_log",
+        engine,
+        schema=db_schema,
+        if_exists=if_exists_option,
+        index=False,
+        dtype=dtype_mapping
+    )
     print(f"{len(df)} Zeilen aus Tab '{tab}' importiert.")
 
 print("Fertig!")
