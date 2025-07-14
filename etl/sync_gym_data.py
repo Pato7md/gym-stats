@@ -15,8 +15,8 @@ db_user = 'postgres'
 db_password = 'Mic$Tam7373'
 db_host = 'localhost'
 db_port = '5432'
-db_name = 'postgres'
-db_schema = 'gym'
+db_name = 'gym'
+db_schema = 'public'
 
 # Verbindung aufbauen mit expliziter Client-Encoding Einstellung
 engine = create_engine(
