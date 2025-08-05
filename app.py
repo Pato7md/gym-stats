@@ -1,5 +1,5 @@
 from flask import Flask
-from dashboards.gym.routes import gym_bp
+from dashboards.routes import gym_bp
 
 app = Flask(__name__)
 app.register_blueprint(gym_bp, url_prefix="/gym")
