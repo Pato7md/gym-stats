@@ -1,38 +1,45 @@
 from flask import Blueprint, render_template, request
-from .data import load_raw, filter_data
-import plotly.express as px
+from .data import load_data, get_geraete_options, get_filtered_data, get_aggregated_data
 
-gym_bp = Blueprint("gym", __name__, template_folder="../../templates")
+gym_bp = Blueprint('gym', __name__, template_folder='../../templates')
 
-raw = load_raw()
+df = load_data()
 
-@gym_bp.route("/")
+@gym_bp.route('/')
 def dashboard():
-    person = request.args.get("person", "michi")
-    gym = request.args.get("gym", raw["gym"].dropna().unique()[0])
-    geraete = request.args.getlist("geraete") or [raw["gerät"].dropna().unique()[0]]
-    start = request.args.get("start", raw["datum"].min().date().isoformat())
-    end = request.args.get("end", raw["datum"].max().date().isoformat())
-    metric = request.args.get("metric", "volumen")
+    # Parameter aus URL holen oder Standardwerte setzen
+    personen = sorted(df['person'].dropna().unique().tolist())
+    gyms = sorted(df['gym'].dropna().unique().tolist())
 
-    df = filter_data(raw, person, gym, geraete, start, end)
-    if metric == "volumen":
-        agg = df.groupby(df["datum"].dt.date)["vol_gesamt"].sum().reset_index(name="vol_gesamt")
-    elif metric == "gewicht":
-        agg = df.groupby(df["datum"].dt.date)["avg_gewicht"].mean().reset_index(name="avg_gewicht")
-    elif metric == "wdh":
-        agg = df.groupby(df["datum"].dt.date)["avg_wdh"].mean().reset_index(name="avg_wdh")
-    else:
-        agg = []
+    person = request.args.get('person', personen[0])
+    gym = request.args.get('gym', gyms[0])
+    start = request.args.get('start', df['datum'].min().date().isoformat())
+    end = request.args.get('end', df['datum'].max().date().isoformat())
+    metric = request.args.get('metric', 'volumen')
 
-    # Plotly
-    y_col = agg.columns[1] if len(agg.columns) > 1 else None
-    fig = px.line(agg, x=agg.columns[0], y=y_col, title="Metrik über Zeit") if not agg.empty else None
-    plot_html = fig.to_html(full_html=False) if fig else ""
+    geraete = request.args.getlist('geraete')
+    if not geraete:
+        geraete = get_geraete_options(df, person, gym, start, end)
+        if not geraete:
+            geraete = []
 
-    return render_template("gym.html",
+    filtered_df = get_filtered_data(df, person, gym, geraete, start, end)
+    agg, fig = get_aggregated_data(filtered_df, metric)
+
+    plot_html = fig.to_html(full_html=False) if fig else ''
+
+    # Tabelle als Liste von Dicts für Template
+    table = agg.to_dict('records') if not agg.empty else []
+
+    return render_template('gym.html',
+                           personen=personen,
+                           gyms=gyms,
                            person=person,
                            gym=gym,
+                           start=start,
+                           end=end,
                            metric=metric,
-                           table=agg.to_dict(orient="records"),
+                           geraete=geraete,
+                           geraete_options=get_geraete_options(df, person, gym, start, end),
+                           table=table,
                            plot_html=plot_html)
