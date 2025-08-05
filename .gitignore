@@ -1,0 +1,54 @@
+# 🐍 Python
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# 🧪 Jupyter Notebooks
+.ipynb_checkpoints/
+
+# 🔐 Umgebungsvariablen & Secrets
+.env
+.env.*
+
+# 🗃️ Datenbanken & Zwischendaten
+*.sqlite
+*.db
+*.parquet
+*.feather
+*.h5
+
+# 📊 Daten-/Output-Dateien
+*.csv
+*.tsv
+*.xlsx
+*.json
+*.xml
+*.sav
+*.log
+
+# 🖼️ Temporäre Bilder, PDFs etc.
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.pdf
+
+# 🧠 Modelle, Pickles etc.
+*.pkl
+*.joblib
+*.hdf5
+
+# 🖥️ IDE & Systemdateien
+.DS_Store
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+
+# 🔧 Build-/Cache-Verzeichnisse (falls du z. B. mal PyInstaller nutzt)
+build/
+dist/
+*.egg-info/
