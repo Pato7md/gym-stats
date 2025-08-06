@@ -42,4 +42,5 @@ def dashboard():
                            geraete=geraete,
                            geraete_options=get_geraete_options(df, person, gym, start, end),
                            table=table,
-                           plot_html=plot_html)
+                           plot_html=plot_html
+    )
