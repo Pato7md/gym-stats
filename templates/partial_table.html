@@ -1,0 +1,13 @@
+{% if table %}
+  {% for row in table %}
+    <tr data-geraet="{{ row['Gerät'] }}">
+      <td>{{ row['Gerät'] }}</td>
+      <td>{{ row['Anzahl Besuche'] }}</td>
+      <td>{{ row['Volumen / Besuch'] }}</td>
+      <td>{{ row['Gewicht / Besuch'] }}</td>
+      <td>{{ row['Wdh / Besuch'] }}</td>
+    </tr>
+  {% endfor %}
+{% else %}
+  <tr><td colspan="99">Keine Daten für die gewählten Filter.</td></tr>
+{% endif %}

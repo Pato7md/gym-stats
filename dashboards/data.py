@@ -21,6 +21,15 @@ def load_data():
     df.rename(columns={'tab_name': 'person', 'timestamp': 'datum'}, inplace=True)
     df['datum'] = pd.to_datetime(df['datum'], dayfirst=True, errors='coerce')
 
+    for col in [f'satz{i}_gew' for i in [1, 2, 3]]:
+        df[col] = (
+            df[col]
+            .astype(str)  # sicherstellen, dass es String ist
+            .str.replace(',', '.', regex=False)  # Kommas zu Punkten
+            .str.extract(r'(\d+(?:\.\d+)?)')[0]  # nur erste gültige Zahl extrahieren
+            .astype(float)  # in Float konvertieren
+        )
+
     # Berechnungen wie im Notebook
     for i in [1, 2, 3]:
         df[f'vol_satz{i}'] = df[f'satz{i}_gew'] * df[f'satz{i}_wdh']

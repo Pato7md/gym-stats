@@ -1,0 +1,22 @@
+#chart-container {
+  border: 1px solid #444;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #1e1e1e;
+}
+
+.custom-header {
+  font-size: 24px;
+  color: #00ff99;
+}
+
+
+html, body {
+  scroll-behavior: auto !important;
+  overflow-anchor: none !important;
+}
+
+
+#plot-container {
+  min-height: 400px;
+}
