@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, Response
-from .prepare_gymdata import load_data, get_geraete_options, get_filtered_data, get_aggregated_data
+from .prepare_gymdata import load_data, get_geraete_options, get_filtered_data, get_aggregated_data, get_overview_stats
 import pandas as pd
 import plotly.io as pio
 import traceback
@@ -26,6 +26,10 @@ def dashboard():
     filtered_df = get_filtered_data(df, person, gym, geraete, start, end)
     agg, fig    = get_aggregated_data(filtered_df, metric)
 
+    alle_geraete = get_geraete_options(df, person, gym, start,end)or[]
+    overview_df = get_filtered_data(df, person, gym, [], start, end)
+    overview_stats = get_overview_stats(overview_df, start=start, end=end)
+
     plot_html = fig.to_html(full_html=False) if fig else '<p>Kein Diagramm vorhanden</p>'
     table = agg.to_dict('records') if not agg.empty else []
 
@@ -34,7 +38,8 @@ def dashboard():
         personen=personen, gyms=gyms, person=person, gym=gym,
         start=start, end=end, metric=metric,
         geraete=geraete, geraete_options=geraete_options,
-        table=table, plot_html=plot_html
+        table=table, plot_html=plot_html,
+        overview_stats=overview_stats  
     )
 
 
@@ -133,3 +138,29 @@ def api_gym_plot():
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': f'Fehler beim Serialisieren der Grafik: {e}'}), 500
+
+
+# Tabelle 2 Aufruf - User-Stats
+@gym_bp.route('/api/gym-overview')
+def api_gym_overview():
+    person = request.args.get('person')
+    gym    = request.args.get('gym')
+    start  = request.args.get('start')
+    end    = request.args.get('end')
+    geraete = request.args.getlist('geraete')
+
+    if not all([person, gym, start, end]):
+        return jsonify({'error': 'Fehlende Parameter'}), 400
+
+    try:
+        # Wenn keine Geräte übergeben → wie bei Tabelle alle passenden Geräte nehmen
+        alle_geraete = get_geraete_options(df, person, gym, start, end) or []
+        filtered_df = get_filtered_data(df, person, gym, alle_geraete, start, end)
+        stats = get_overview_stats(filtered_df, start=start, end=end)
+
+        # Gibt das Partial zurück; Frontend ersetzt #overview-Inhalt
+        return render_template('partial_overview.html', stats=stats)
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({'error': f'Fehler bei Overview-Berechnung: {e}'}), 500

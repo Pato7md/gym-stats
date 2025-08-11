@@ -54,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedGeraete = new Set(getAllGeraeteFromTable());
       highlightSelection();
       fetchAndRenderPlot();
+      fetchAndRenderOverview();
+
     })
     .off('click', '#deselect-all')
     .on('click', '#deselect-all', e => {
@@ -61,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedGeraete.clear();
       highlightSelection();
       fetchAndRenderPlot();
+      fetchAndRenderOverview();
     });
 
   // Initial laden
@@ -123,6 +126,9 @@ async function fetchAndRender(){
   const res = await fetch(`/api/gym-table?${buildParams()}`);
   if(!res.ok){
     tbodyEl.innerHTML = '<tr><td colspan="99">Fehler beim Laden der Tabelle</td></tr>';
+    // Auch Overview leeren/setzen
+    const ov = document.getElementById('overview');
+    if (ov) ov.innerHTML = '<div class="col-12"><p>Keine Daten.</p></div>';   
     return;
   }
 
@@ -158,7 +164,9 @@ async function fetchAndRender(){
       } else {
         selectedGeraete.clear(); selectedGeraete.add(g);
       }
-      highlightSelection(); fetchAndRenderPlot();
+      highlightSelection(); 
+      fetchAndRenderPlot();
+      fetchAndRenderOverview();
     });
   }
 
@@ -169,6 +177,28 @@ async function fetchAndRender(){
   highlightSelection();
 
   await fetchAndRenderPlot();
+  await fetchAndRenderOverview();
+}
+
+// ⬇️ NEU: Holt Overview-HTML von /api/gym-overview und rendert sie
+async function fetchAndRenderOverview(){
+  const container = document.getElementById('overview');
+  if (!container) return;
+
+  try{
+    const res = await fetch(`/api/gym-overview?${buildParams({includeMetric:false, includeGeraete:true})}`);
+    if(!res.ok){
+      const t = await res.text().catch(()=> '');
+      console.error('[overview] HTTP error:', res.status, t);
+      container.innerHTML = '<div class="col-12"><p style="color:#f88;">Fehler beim Laden der Übersicht.</p></div>';
+      return;
+    }
+    const html = await res.text();
+    container.innerHTML = html || '<div class="col-12"><p>Keine Daten.</p></div>';
+  }catch(e){
+    console.error('[overview] JS error:', e);
+    container.innerHTML = '<div class="col-12"><p style="color:#f88;">Fehler beim Verarbeiten der Übersicht.</p></div>';
+  }
 }
 
 

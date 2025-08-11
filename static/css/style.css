@@ -133,3 +133,28 @@ label {
     max-width: 95%;
   }
 }
+
+.section-title {
+  color: #fff !important;
+  font-size: 1.5rem !important;
+  margin-bottom: 0.5rem !important; 
+  margin-top: 1rem !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid #fff;  /* Unterstrich als Linie */
+  padding-bottom: 0.2rem;
+  background-color: #2a2a2a !important;
+}
+
+/* Welcome-Text im Header größer */
+#person-form > span.text-white {
+  font-size: 1.5rem;      /* ~+20% */
+  line-height: 1.1;
+}
+
+/* Person-Select größer, obwohl es .form-select-sm hat */
+#person.form-select-sm {
+  font-size: 1.3rem;     /* ~+15% ggü. Bootstrap-sm */
+  padding-top: 0.5rem;    /* etwas mehr Innenabstand */
+  padding-bottom: 0.5rem;
+  height: auto;           /* verhindert, dass eine feste Höhe es klein hält */
+}
