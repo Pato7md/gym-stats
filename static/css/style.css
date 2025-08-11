@@ -1,22 +1,114 @@
-#chart-container {
-  border: 1px solid #444;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: #1e1e1e;
+/* Base Dark Theme */
+:root {
+  --bg: #121212;
+  --bg-elev: #1e1e1e;
+  --text: #e0e0e0;
+  --text-strong: #fff;
+  --border: #444;
 }
-
-.custom-header {
-  font-size: 24px;
-  color: #00ff99;
-}
-
 
 html, body {
+  background: var(--bg);
+  color: var(--text);
   scroll-behavior: auto !important;
   overflow-anchor: none !important;
 }
 
+h1 {
+  font-size: 2.5rem !important;
+}
 
-#plot-container {
-  min-height: 400px;
+
+h1, h2, h3, h4 { color: var(--text-strong); }
+
+.app-footer {
+  color: var(--text-strong);
+  background: #333;
+  padding: 10px;
+  text-align: center;
+  border-radius: .5rem;
+}
+
+/* Header Dropdowns */
+label {
+  color: var(--text-strong);
+}
+
+/* Sidebar Layout */
+.table-and-sidebar {
+  display: flex;
+  align-items: stretch;
+  gap: .75rem;
+}
+
+
+/* Plot & Plot-Metrik-Dropdown */
+#plot-container, #chart-container {
+  min-height: 420px;
+  background: var(--bg-elev);
+}
+
+.metric-floating {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(18,18,18,.75);
+  backdrop-filter: blur(4px);
+  border: 1px solid #333;
+  border-radius: 5px;
+  padding: 4px 6px;
+}
+
+.metric-floating .form-select-sm {
+  min-width: 170px;
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+
+/* Show Entries Bereich */
+.dataTables_length select {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: .375rem !important;
+  padding: .25rem .5rem !important;
+}
+
+.dataTables_length label {
+  color: var(--text-strong) !important;
+}
+
+
+/* Pagination-Bereich */
+.dataTables_paginate {
+  display: flex !important;
+  gap: .25rem !important;
+  justify-content: center !important;
+  padding: .5rem 0 !important;
+}
+
+.dataTables_paginate a.paginate_button {
+  background: var(--bg-elev) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  padding: .25rem .5rem !important;
+  border-radius: .375rem !important;
+  cursor: pointer !important;
+}
+
+.dataTables_paginate a.paginate_button.current {
+  background: var(--text-strong) !important;
+  color: var(--bg) !important;
+  border-color: var(--text-strong) !important;
+  font-weight: 600 !important;
+}
+
+.dataTables_paginate a.paginate_button:not(.current) {
+  color: var(--text-strong) !important; /* bei dir: weiß */
 }

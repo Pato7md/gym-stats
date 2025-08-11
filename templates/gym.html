@@ -1,84 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<style>
-  /* ===== Tabellen-Fixes: kein weißer Spalt bei scrollY ===== */
-  /* DataTables trennt Kopf & Body in eigene Wrapper – diese Abstände killen */
-  .dataTables_scrollHead { margin-bottom: 0 !important; }
-  .dataTables_scrollBody { border-top: none !important; }
-  /* sicherheitshalber: keine zusätzliche obere Border auf erster Datenzeile */
-  #my-table tbody tr:first-child td { border-top: none !important; }
-  /* und keine „Luft“ durch Table-Spacing */
-  #my-table { border-collapse: collapse !important; }
-
-  /* ===== Rechte Sidebar-Layout ===== */
-  /* Tabelle (Mitte) + Sidebar (rechts) sollen gleich hoch sein */
-  .table-and-sidebar {
-    display: flex;
-    align-items: stretch; /* macht beide Spalten gleich hoch */
-    gap: 0.75rem;
-  }
-  /* Sidebar: oben Buttons, unten Show/Pagination */
-  #dt-controls-sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* bottom-block ans untere Ende */
-    width: 100%;
-  }
-  /* Top: Buttons schmaler */
-  #select-buttons .btn {
-    padding: .3rem .6rem;   /* schmaler */
-    font-size: .85rem;
-  }
-  /* Bottom: hier landen später Show & Pagination */
-  #dt-controls-bottom { 
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-  }
-  /* DataTables-Controls hübsch & ohne Floats */
-  #dt-controls-bottom .dataTables_length,
-  #dt-controls-bottom .dataTables_paginate {
-    float: none !important;
-    margin: 0 !important;
-  }
-  #dt-controls-bottom .dataTables_length label {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    margin: 0;
-  }
-  #dt-controls-bottom .dataTables_paginate {
-    display: flex;
-    gap: .25rem .375rem;
-    flex-wrap: wrap;
-  }
-  #dt-controls-bottom .paginate_button {
-    padding: .25rem .5rem;
-    border-radius: .375rem;
-    text-decoration: none;
-  }
-  #dt-controls-bottom .paginate_button.current {
-    font-weight: 600;
-  }
-
-  /* Optionale Kompakt-Optik für Zellen */
-  #my-table.dataTable tbody td,
-  #my-table.dataTable thead th {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
-    line-height: 1.2 !important;
-  }
-</style>
-
 <div class="container-fluid">
-  <div class="row">
-    <!-- Links: 4 Dropdowns (unverändert) -->
+  <div class="row g-3">
+    
+    <!-- Filter -->
     <div class="col-md-3">
       <form id="filter-form" class="mb-4">
         <div class="mb-3">
-          <label for="person" class="form-label">Person:</label>
+          <label for="person" class="form-label">Person</label>
           <select id="person" name="person" class="form-select">
             {% for p in personen %}
               <option value="{{ p }}" {% if p == person %}selected{% endif %}>{{ p }}</option>
@@ -87,7 +17,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="gym" class="form-label">Gym:</label>
+          <label for="gym" class="form-label">Gym</label>
           <select id="gym" name="gym" class="form-select">
             {% for g in gyms %}
               <option value="{{ g }}" {% if g == gym %}selected{% endif %}>{{ g }}</option>
@@ -96,22 +26,21 @@
         </div>
 
         <div class="mb-3">
-          <label for="start" class="form-label">Zeitraum Start:</label>
+          <label for="start" class="form-label">Zeitraum Start</label>
           <input id="start" type="date" name="start" value="{{ start }}" class="form-control" />
         </div>
 
         <div class="mb-3">
-          <label for="end" class="form-label">Zeitraum Ende:</label>
+          <label for="end" class="form-label">Zeitraum Ende</label>
           <input id="end" type="date" name="end" value="{{ end }}" class="form-control" />
         </div>
       </form>
     </div>
 
-    <!-- Mitte + Rechts: gemeinsame Höhe -->
+    <!-- Tabelle + Sidebar -->
     <div class="col-md-9 table-and-sidebar">
-      <!-- Mitte: Tabelle -->
       <div class="flex-grow-1">
-        <table id="my-table" class="table table-striped table-bordered">
+        <table id="my-table" class="table table-striped table-bordered mb-0">
           <thead>
             <tr>
               <th>Gerät</th>
@@ -127,25 +56,22 @@
         </table>
       </div>
 
-      <!-- Rechts: Sidebar (oben Buttons, unten Show+Pagination) -->
-      <aside style="width: 220px;">
+      <aside class="sidebar">
         <div id="dt-controls-sidebar">
-          <!-- oben: Buttons (bleiben oben) -->
           <div id="select-buttons" class="d-flex flex-column gap-2">
             <button id="select-all" class="btn btn-sm btn-primary">Alle auswählen</button>
             <button id="deselect-all" class="btn btn-sm btn-secondary">Alle abwählen</button>
           </div>
-          <!-- unten: DataTables Controls (per JS hierher verschoben) -->
           <div id="dt-controls-bottom"></div>
         </div>
       </aside>
     </div>
   </div>
 
-  <!-- Untere Zeile: Diagramm -->
+  <!-- Diagramm -->
   <div class="row mt-4">
     <div class="col-12">
-      <div class="position-relative">
+      <div class="position-relative w-100">
         <div class="metric-floating flex-column">
           <select id="metric" name="metric" class="form-select form-select-sm">
             <option value="volumen" {% if metric == 'volumen' %}selected{% endif %}>Trainingsvolumen</option>
@@ -153,15 +79,16 @@
             <option value="wdh" {% if metric == 'wdh' %}selected{% endif %}>Mittlere Wiederholungen</option>
           </select>
         </div>
-        <div id="plot-container" style="min-height: 420px;"></div>
+        <div id="plot-container"></div>
       </div>
     </div>
   </div>
-
+</div>
 {% endblock %}
 
+
 {% block scripts %}
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="{{ url_for('static', filename='js/gym.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/gym.js') }}" defer></script>
 {% endblock %}

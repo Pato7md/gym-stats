@@ -1,93 +1,40 @@
-<!--Doctype html: Moderner Webstandard HTML5
-Inhalt: Deutsch, wichtig für Suchmaschinen-->
 <!DOCTYPE html>
 <html lang="de">
 
+<!--Header des Dokuments-->
+<head>
+  <meta charset="UTF-8" />
+  <title>Gym Dashboard - Pato Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!--Meta-Informationen-->
-<head> 
-    <!--UTF-8, Browser-URL-Info, Handy Skalierung-->  
-    <meta charset="UTF-8" />        
-    <title>Gym Dashboard - Pato Analytics</title>   
-    <meta name="viewport" content="width=device-width, initial-scale=1" /> 
-    <!--CSS: Framework von einem CDN; Bootstrap: Styles für Buttons/Tabellen/Layouts-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Vendor CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
 
-
-    <style>
-        body { 
-            padding: 20px; 
-            background-color: #121212;
-            color: #e0e0e0; 
-        }
-        h1, h2 { 
-            margin-bottom: 20px; 
-            color: #ffffff;
-        }
-        table { 
-            background: #121212;
-            color: #e0e0e0;
-            border-color: #444; 
-        }
-        table, th, td {
-            border: 1px solid #444;
-        }
-        table tr:hover{
-            background-color: #333;
-        }
-        footer{
-            color: #ffffff;
-            background-color: #333333;
-            padding: 10px;
-            text-align: center;
-        }
-        .metric-floating {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-            background: rgba(18,18,18,.75); /* dein Dark-Theme */
-            backdrop-filter: blur(4px);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 6px 8px;
-        }
-        .metric-floating .form-select-sm {
-            min-width: 180px;
-            background-color: #121212;
-            color: #e0e0e0;
-            border-color: #444;
-        }  
-    </style>
+  <!-- App CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 
-<!--Sichtbarer Teil für alle User-->
-<body>
+<!-- Body des Dokuments-->
+<body class="bg-dark text-body">
+  <div class="container py-4">
+    <header class="mb-3">
+      <h1 class="h3 text-white mb-0">Gym Analytics Dashboard</h1>
+    </header>
 
-    <div class="container">
-        <header>
-            <h1>Gym Dashboard Jau</h1>
-        </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
 
-        <main>
-            {% block content %}{% endblock %}  <!--Platzhalter-->
+    <footer class="app-footer mt-4">
+      <small>&copy; 2025 Pato Analytics</small>
+    </footer>
+  </div>
 
-        </main>
-
-        <footer class="mt-4 text-muted">
-            <small>&copy; 2025 Pato Analytics</small>
-        </footer>
-    </div>
-
-    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-    {% block scripts %}{% endblock %}  <!--Platzhalter-->
+  <!-- Vendor JS -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  {% block scripts %}{% endblock %}
 </body>
 
 

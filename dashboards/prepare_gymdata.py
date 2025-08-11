@@ -1,22 +1,10 @@
 import pandas as pd
-from sqlalchemy import create_engine
-import os
-from dotenv import load_dotenv
 import plotly.express as px
-
-load_dotenv()
-
-user = os.getenv('DB_USER')
-password = os.getenv('DB_PASSWORD')
-host = os.getenv('DB_HOST')
-db_name = os.getenv('DB_NAME_GYM')
-
-connection_string = f'postgresql://{user}:{password}@{host}:5432/{db_name}'
-engine = create_engine(connection_string, connect_args={"options": "-c client_encoding=utf8"})
+from db import ENGINE
 
 def load_data():
     query = 'SELECT * FROM gym_log'
-    df = pd.read_sql(query, engine)
+    df = pd.read_sql(query, ENGINE)
 
     df.rename(columns={'tab_name': 'person', 'timestamp': 'datum'}, inplace=True)
     df['datum'] = pd.to_datetime(df['datum'], dayfirst=True, errors='coerce')
@@ -24,13 +12,12 @@ def load_data():
     for col in [f'satz{i}_gew' for i in [1, 2, 3]]:
         df[col] = (
             df[col]
-            .astype(str)  # sicherstellen, dass es String ist
-            .str.replace(',', '.', regex=False)  # Kommas zu Punkten
-            .str.extract(r'(\d+(?:\.\d+)?)')[0]  # nur erste gültige Zahl extrahieren
-            .astype(float)  # in Float konvertieren
+            .astype(str) 
+            .str.replace(',', '.', regex=False)
+            .str.extract(r'(\d+(?:\.\d+)?)')[0] 
+            .astype(float)
         )
 
-    # Berechnungen wie im Notebook
     for i in [1, 2, 3]:
         df[f'vol_satz{i}'] = df[f'satz{i}_gew'] * df[f'satz{i}_wdh']
 
@@ -40,10 +27,11 @@ def load_data():
 
     return df
 
+
 def get_geraete_options(df, person, gym, start, end):
     start_dt = pd.to_datetime(start)
     end_dt = pd.to_datetime(end) + pd.Timedelta(days=1)
-
+    
     filtered = df[
         (df['person'].str.lower() == person.lower()) &
         (df['gym'] == gym) &
@@ -52,6 +40,7 @@ def get_geraete_options(df, person, gym, start, end):
     ]
 
     return sorted(filtered['gerät'].dropna().unique().tolist())
+
 
 def get_filtered_data(df, person, gym, geraete, start, end):
     start_dt = pd.to_datetime(start)
