@@ -48,6 +48,7 @@ label {
   background: var(--bg-elev);
 }
 
+
 .metric-floating {
   position: absolute;
   top: 5px;
@@ -111,4 +112,24 @@ label {
 
 .dataTables_paginate a.paginate_button:not(.current) {
   color: var(--text-strong) !important; /* bei dir: weiß */
+}
+
+
+.outer-wrapper {
+  max-width: 65%;
+  margin: 0 auto;
+}
+
+/* Wenn Bildschirm < 1200px → mehr Platz geben */
+@media (max-width: 1200px) {
+  .outer-wrapper {
+    max-width: 80%;
+  }
+}
+
+/* Wenn Bildschirm < 992px → fast volle Breite */
+@media (max-width: 992px) {
+  .outer-wrapper {
+    max-width: 95%;
+  }
 }

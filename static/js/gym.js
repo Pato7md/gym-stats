@@ -16,22 +16,35 @@ const debounce = (fn, wait = 150) => {
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#filter-form');
   const metricSelect = document.getElementById('metric');
+  const personSelect = document.getElementById('person'); // kann jetzt im Header liegen
 
   // Recalc bei Resize
   window.addEventListener('resize', debounce(() => {
     if (tableInstance) tableInstance.columns.adjust().responsive.recalc();
   }, 150));
 
-  // Grundfilter → Tabelle + Plot neu laden, Auswahl leeren
-  form.querySelectorAll('#person, #gym, #start, #end').forEach(el =>
-    el.addEventListener('change', async () => {
+  // Event-Listener für alle Filter im Formular (außer Person, falls außerhalb)
+  if (form) {
+    form.querySelectorAll('#gym, #start, #end').forEach(el =>
+      el.addEventListener('change', async () => {
+        selectedGeraete.clear();
+        await fetchAndRender();
+      })
+    );
+  }
+
+  // Person-Dropdown separat behandeln (unabhängig vom DOM-Ort)
+  if (personSelect) {
+    personSelect.addEventListener('change', async () => {
       selectedGeraete.clear();
       await fetchAndRender();
-    })
-  );
+    });
+  }
 
-  // Metrik → nur Plot neu laden
-  metricSelect?.addEventListener('change', fetchAndRenderPlot);
+  // Metrik-Dropdown → nur Plot neu laden
+  if (metricSelect) {
+    metricSelect.addEventListener('change', fetchAndRenderPlot);
+  }
 
   // Buttons: Alle auswählen / abwählen
   $(document)
@@ -55,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 // Hilfs-Funktion
 function getAllGeraeteFromTable(){
   const out=[]; document.querySelectorAll('#my-table tbody tr').forEach(r=>{
@@ -74,12 +88,24 @@ function highlightSelection(){
 function buildParams({includeMetric=true, includeGeraete=false}={}){
   const form = document.querySelector('#filter-form');
   const metricSelect = document.getElementById('metric');
+  const personSelect = document.getElementById('person');
   const fd = new FormData(form);
   const params = new URLSearchParams();
 
   for(const [k,v] of fd.entries()) params.append(k, v);
-  if(includeMetric && metricSelect && !params.has('metric')) params.append('metric', metricSelect.value);
-  if(includeGeraete && selectedGeraete.size>0) selectedGeraete.forEach(g => params.append('geraete', g));
+
+  if (personSelect && !params.has('person')) {
+    params.append('person', personSelect.value);
+  }
+
+  if(includeMetric && metricSelect && !params.has('metric')) {
+    params.append('metric', metricSelect.value);
+  }
+  
+  if(includeGeraete && selectedGeraete.size>0) {
+    selectedGeraete.forEach(g => params.append('geraete', g));
+  }
+  
   params.append('_ts', Date.now()); // cache bust
   return params.toString();
 }
