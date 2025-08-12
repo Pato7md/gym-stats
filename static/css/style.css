@@ -97,7 +97,7 @@ label {
   background: linear-gradient(90deg, #004d40, #00695c); /* Dunkel-Petrol → Mittel-Petrol */
   font-size: 1.5rem !important;
   font-weight: 600 !important;
-  margin: 1rem 0 0.5rem 0 !important;
+  margin: 0.2rem 0 0.2rem 0 !important;
   border-bottom: 2px solid #e8f5e9;
 }
 
@@ -168,28 +168,42 @@ label {
 
   h1 {font-size: 1.4rem !important;}
 
-
-  /* Zwischen Überschriften */
-  .section-title {
-    font-size: 1.1rem !important;  
-    margin: 0.8rem 0 0.4rem 0 !important;
-    padding: 0.2rem 0.3rem; 
-  }
-
-
   /* Headline Person Dropdown */
   #person-form > span.text-white {
-    font-size: 1rem; 
+    font-size: 0.7rem; 
   }
 
   #person.form-select-sm {
-    font-size: 0.9rem; 
+    font-size: 0.8rem; 
     padding-top: 0.3rem;
     padding-bottom: 0.3rem;
   }
 
-  .filter-row {
-    flex-direction: column !important;
+  
+  /* Zwischen Überschriften */
+  .section-title {
+    font-size: 1.1rem !important;  
+    margin: 0.2rem 0 0.3rem 0 !important;
+    padding: 0.2rem 0.3rem; 
+  }
+
+
+  /*Drodown Beschriftung ändern*/
+  .mb-3 {
+    display: flex;
+    align-items: center;      /* Vertikal zentrieren */
+    gap: 0.5rem;               /* Abstand zwischen Label und Feld */
+  }
+
+  .mb-3 .form-label {
+    margin-bottom: 0;          /* Standard-Abstand entfernen */
+    white-space: nowrap;       /* Label nicht umbrechen */
+    font-size: 0.9rem;          /* Etwas kleiner für Handy */
+  }
+
+  .mb-3 .form-select,
+  .mb-3 .form-control {
+    flex: 1;                    /* Feld nimmt restliche Breite */
   }
 
 
