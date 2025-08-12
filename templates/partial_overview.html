@@ -1,75 +1,21 @@
-{# partial_overview.html #}
-{# Akzeptiert entweder "stats" (API) oder "overview_stats" (Initial-Render) #}
 {% set s = stats if stats is defined else overview_stats %}
 
-<div class="col-12 col-md-6 col-lg-4 col-xxl-2">
-  <div class="card bg-dark border-secondary h-100">
-    <div class="card-body" style="padding:0.5rem;">
-      <div class="text-secondary small mb-1" style="color:#d0d0d0 !important;">Anzahl Besuche gesamt</div>
-      <div class="h3 mb-0" style="color:#fff;">{{ (s.total_visits if s and s.total_visits is not none else 0) }}</div>
-    </div>
-  </div>
-</div>
+{% set cards = [
+    {'title': 'Besuche gesamt', 'value': s.total_visits or 0},
+    {'title': 'Besuche pro Woche', 'value': (s.avg_visits_per_week or 0)},
+    {'title': 'Geräte pro Besuch', 'value': (s.avg_geraete_per_visit or 0)|round(2)},
+    {'title': 'Dein Lieblingsgerät', 'value': s.lieblingsgeraet or '—'},
+] %}
 
-<div class="col-12 col-md-6 col-lg-4 col-xxl-2">
-  <div class="card bg-dark border-secondary h-100">
-    <div class="card-body" style="padding:0.5rem;">
-      <div class="text-secondary small mb-1" style="color:#d0d0d0 !important;">Ø Besuche pro Woche</div>
-      <div class="h3 mb-0" style="color:#fff;">
-        {{ (s.avg_visits_per_week if s and s.avg_visits_per_week is not none else 0)|round(2) }}
+<div class="row justify-content-center g-3">
+  {% for card in cards %}
+  <div class="col-12 col-sm-3 col-xxl-auto stat-card">
+    <div class="card bg-dark border-secondary h-100">
+      <div class="card-body" style="padding:0.5rem;">
+        <div class="ga-stat-title">{{ card.title }}</div>
+        <div class="ga-stat-value">{{ card.value }}</div>
       </div>
     </div>
   </div>
-</div>
-
-<div class="col-12 col-md-6 col-lg-4 col-xxl-2">
-  <div class="card bg-dark border-secondary h-100">
-    <div class="card-body" style="padding:0.5rem;">
-      <div class="text-secondary small mb-1" style="color:#d0d0d0 !important;">Ø Geräte pro Besuch</div>
-      <div class="h3 mb-0" style="color:#fff;">
-        {{ (s.avg_geraete_per_visit if s and s.avg_geraete_per_visit is not none else 0)|round(2) }}
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="col-12 col-md-6 col-lg-4 col-xxl-2">
-  <div class="card bg-dark border-secondary h-100">
-    <div class="card-body" style="padding:0.5rem;">
-      <div class="text-secondary small mb-1" style="color:#d0d0d0 !important;">Dein Lieblingsgerät</div>
-      <div class="h5 mb-0" style="color:#fff;">
-        {{ (s.lieblingsgeraet if s and s.lieblingsgeraet else '—') }}
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="col-12 col-md-6 col-lg-4 col-xxl-2">
-  <div class="card bg-dark border-secondary h-100">
-    <div class="card-body" style="padding:0.5rem;">
-      <div class="text-secondary small mb-1" style="color:#d0d0d0 !important;">Meiste Ø Wdh</div>
-      <div class="h5 mb-0" style="color:#fff;">
-        {% if s and s.top_wdh_geraet %}
-          {{ s.top_wdh_geraet }} ({{ (s.top_wdh_value if s.top_wdh_value is not none else 0)|round(1) }})
-        {% else %}
-          —
-        {% endif %}
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="col-12 col-md-6 col-lg-4 col-xxl-2">
-  <div class="card bg-dark border-secondary h-100">
-    <div class="card-body" style="padding:0.5rem;">
-      <div class="text-secondary small mb-1" style="color:#d0d0d0 !important;">Höchstes Ø Gewicht</div>
-      <div class="h5 mb-0" style="color:#fff;">
-        {% if s and s.top_gewicht_geraet %}
-          {{ s.top_gewicht_geraet }} ({{ (s.top_gewicht_value if s.top_gewicht_value is not none else 0)|round(1) }})
-        {% else %}
-          —
-        {% endif %}
-      </div>
-    </div>
-  </div>
+  {% endfor %}
 </div>

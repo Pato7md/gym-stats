@@ -54,8 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedGeraete = new Set(getAllGeraeteFromTable());
       highlightSelection();
       fetchAndRenderPlot();
-      fetchAndRenderOverview();
-
+      markLongTextValues();
     })
     .off('click', '#deselect-all')
     .on('click', '#deselect-all', e => {
@@ -63,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedGeraete.clear();
       highlightSelection();
       fetchAndRenderPlot();
-      fetchAndRenderOverview();
+      markLongTextValues();
     });
 
   // Initial laden
@@ -148,12 +147,42 @@ async function fetchAndRender(){
   // DataTables neu initialisieren (nur wenn es Zeilen gibt)
   if (allGeraete.length > 0) {
     tableInstance = $('#my-table').DataTable({
-      paging:true, pageLength:15, lengthMenu:[5,10,15],
-      info:false, searching:false, responsive:true, destroy:true,
-      scrollY:'265px', scrollCollapse:false,
+      paging:false,  
+      //pageLength:5, 
+      //lengthMenu:[5,10,15],
+      info:false, 
+      searching:false, 
+      responsive:true, 
+      destroy:true,
+      scrollY:'208px', 
+      scrollCollapse:false,
       dom:'rt<"dt-bottom"l p>',
       language:{ lengthMenu:"Show _MENU_" },
-      pagingType:'simple_numbers'
+      pagingType:'simple_numbers',
+      order: [[1, 'desc']],
+      columnDefs: [
+        {
+          targets: 2, // Volumen-Spalte 
+          render: function (data, type, row) {
+            if (type === 'display' && data != null) {
+              return parseInt(data).toLocaleString('de-DE');
+            }
+            return data;
+          }
+        },
+        {
+          targets: [3, 4], // Gewicht & Wdh Spalten
+          render: function (data, type, row) {
+            if (type === 'display' && data != null) {
+              return parseFloat(data).toLocaleString('de-DE', {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1
+              });
+            }
+            return data;
+          }
+        }
+      ]
     });
 
     // Click-Handler auf Tabellenzeilen
@@ -166,7 +195,7 @@ async function fetchAndRender(){
       }
       highlightSelection(); 
       fetchAndRenderPlot();
-      fetchAndRenderOverview();
+      markLongTextValues();
     });
   }
 
@@ -178,6 +207,7 @@ async function fetchAndRender(){
 
   await fetchAndRenderPlot();
   await fetchAndRenderOverview();
+  markLongTextValues();
 }
 
 // ⬇️ NEU: Holt Overview-HTML von /api/gym-overview und rendert sie
@@ -201,6 +231,14 @@ async function fetchAndRenderOverview(){
   }
 }
 
+function markLongTextValues() {
+  document.querySelectorAll('.ga-stat-value').forEach(el => {
+    const value = el.textContent.trim();
+    if (!/^\d+([.,]\d+)?$/.test(value)) {
+      el.classList.add('long-text');
+    }
+  });
+}
 
 // Holt JSON Daten von api/gym-plot
 async function fetchAndRenderPlot(){

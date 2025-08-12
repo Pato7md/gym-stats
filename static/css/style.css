@@ -5,6 +5,7 @@
   --text: #e0e0e0;
   --text-strong: #fff;
   --border: #444;
+  --main-green: #00695c; /* Falls du ändern willst, nur hier */
 }
 
 html, body {
@@ -14,10 +15,7 @@ html, body {
   overflow-anchor: none !important;
 }
 
-h1 {
-  font-size: 2.5rem !important;
-}
-
+h1 {font-size: 2.3rem !important;}
 
 h1, h2, h3, h4 { color: var(--text-strong); }
 
@@ -29,10 +27,31 @@ h1, h2, h3, h4 { color: var(--text-strong); }
   border-radius: .5rem;
 }
 
-/* Header Dropdowns */
+
+
+/* Layout generell*/
+.outer-wrapper {
+  max-width: 65%;
+  margin: 0 auto;
+}
+
+@media (max-width: 1200px) {
+  .outer-wrapper {
+    max-width: 80%;
+  }}
+
+@media (max-width: 992px) {
+  .outer-wrapper {
+    max-width: 95%;
+  }}
+
+
+
+/* Dropdown Header */
 label {
   color: var(--text-strong);
 }
+
 
 /* Sidebar Layout */
 .table-and-sidebar {
@@ -42,12 +61,11 @@ label {
 }
 
 
-/* Plot & Plot-Metrik-Dropdown */
+/* Plot & Plot-Dropdown */
 #plot-container, #chart-container {
   min-height: 420px;
   background: var(--bg-elev);
 }
-
 
 .metric-floating {
   position: absolute;
@@ -72,6 +90,7 @@ label {
 }
 
 
+
 /* Show Entries Bereich */
 .dataTables_length select {
   background: var(--bg) !important;
@@ -84,6 +103,7 @@ label {
 .dataTables_length label {
   color: var(--text-strong) !important;
 }
+
 
 
 /* Pagination-Bereich */
@@ -115,46 +135,78 @@ label {
 }
 
 
-.outer-wrapper {
-  max-width: 65%;
-  margin: 0 auto;
-}
 
-/* Wenn Bildschirm < 1200px → mehr Platz geben */
-@media (max-width: 1200px) {
-  .outer-wrapper {
-    max-width: 80%;
-  }
-}
 
-/* Wenn Bildschirm < 992px → fast volle Breite */
-@media (max-width: 992px) {
-  .outer-wrapper {
-    max-width: 95%;
-  }
-}
 
-.section-title {
-  color: #fff !important;
+
+/* Zwischen Überschriften */
+.section-title { 
+  color: #e0f2f1 !important; /* helles, leicht grünliches Weiß */
+  background: linear-gradient(90deg, #004d40, #00695c); /* Dunkel-Petrol → Mittel-Petrol */
   font-size: 1.5rem !important;
-  margin-bottom: 0.5rem !important; 
-  margin-top: 1rem !important;
   font-weight: 600 !important;
-  border-bottom: 2px solid #fff;  /* Unterstrich als Linie */
-  padding-bottom: 0.2rem;
-  background-color: #2a2a2a !important;
+  margin: 1rem 0 0.5rem 0 !important;
+  border-bottom: 2px solid #e8f5e9;
 }
 
-/* Welcome-Text im Header größer */
+
+
+
+/* Headline Person Dropdown */
 #person-form > span.text-white {
-  font-size: 1.5rem;      /* ~+20% */
-  line-height: 1.1;
+  font-size: 1.4rem;
+  line-height: 1;
 }
 
-/* Person-Select größer, obwohl es .form-select-sm hat */
 #person.form-select-sm {
-  font-size: 1.3rem;     /* ~+15% ggü. Bootstrap-sm */
-  padding-top: 0.5rem;    /* etwas mehr Innenabstand */
+  font-size: 1.2rem;
+  padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  height: auto;           /* verhindert, dass eine feste Höhe es klein hält */
+  height: auto;
+}
+
+
+
+
+
+
+/* Karten Layout */
+@media (min-width: 1400px) {
+  .stat-card { flex: 0 0 16.66%; max-width: 16.66%; }
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.ga-stat-title {
+  color: #d0d0d0 !important;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.ga-stat-value {
+  color: #ffffff !important;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  
+  flex: 1; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(1.6rem, 2.2vw, 2.3rem);
+}
+
+.ga-stat-value.long-text {
+  font-size: clamp(0.8rem, 1.4vw, 1.3rem) !important;
+}
+
+
+/* Tablele*/
+.table,
+.table th,
+.table td {
+  border-color: rgba(255, 255, 255, 0.04) !important; 
 }

@@ -5,28 +5,17 @@
 
   <div class="section-title">Deine persönlichen Statistiken</div>
 
-  {# NEU: KPI-Overview (Initial-Render nutzt overview_stats) #}
   <div id="overview" class="row g-3 mb-4">
     {% include 'partial_overview.html' %}
   </div>
 
 
-  <div class="section-title">Geräte im Detail</div>
+  <div class="section-title">Geräte-Auswahl</div>
 
-  <!--Tabelle, Dropdowns, Buttons-->
   <div class="row g-3 align-items-start">
     
-    <!-- Dropdowns + Buttons (links) -->
     <div class="col-12 col-md-2">
       <form id="filter-form" class="mb-4">
-
-
-        <!-- Sidebar mit Buttons -->
-        <div id="select-buttons" class="d-flex flex-column gap-2">
-          <button id="select-all" class="btn btn-sm btn-primary w-100">Alle auswählen</button>
-          <button id="deselect-all" class="btn btn-sm btn-secondary w-100">Alle abwählen</button>
-        </div>
-
 
         <div class="mb-3">
           <label for="gym" class="form-label">Gym</label>
@@ -49,18 +38,17 @@
 
       </form>
     </div>
-
-    <!-- Tabelle -->
-    <div class="col-12 col-md-10">
+    
+    <div class="col-12 col-md-9">
       <div class="table-responsive">
         <table id="my-table" class="table table-striped table-bordered mb-0">
           <thead>
             <tr>
               <th>Gerät</th>
               <th>Sessions</th>
-              <th>⌀ Volumen</th>
-              <th>⌀ Gewicht</th>
-              <th>⌀ Wdh</th>
+              <th>Volumen</th>
+              <th>Gewicht</th>
+              <th>Wdh</th>
             </tr>
           </thead>
           <tbody id="table-body">
@@ -70,14 +58,22 @@
       </div>
     </div>
 
+    <div class="col-12 col-md-1">
+      <form id="filter-form" class="mb-4">
+
+        <div id="select-buttons" class="d-flex flex-column gap-2">
+          <button id="select-all" class="btn btn-sm btn-primary w-100">Alle</button>
+          <button id="deselect-all" class="btn btn-sm btn-secondary w-100">Keine</button>
+        </div>
+        
+      </form>
+    </div>
+
   </div>
 
 
+  <div class="section-title">Trainings-Fortschritt</div>
 
-  <div class="section-title">Fortschritt im Zeitverlauf</div>
-
-
-  <!-- Plot -->
   <div class="row mt-4">
     <div class="col-12">
       <div class="position-relative w-100">

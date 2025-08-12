@@ -131,6 +131,8 @@ def get_overview_stats(
         "top_wdh_value": None,
         "top_gewicht_geraet": None,
         "top_gewicht_value": None,
+        "avg_wdh_per_week": 0.0,      
+        "avg_volumen_per_week": 0.0      
     }
 
     if filtered_df is None or filtered_df.empty:
@@ -166,43 +168,9 @@ def get_overview_stats(
     else:
         lieblingsgeraet = None
 
-    # 5 & 6) Top-Gerät nach Ø Wdh bzw. Ø Gewicht pro Besuch
-    needed = {'gerät', 'datum', 'avg_wdh', 'avg_gewicht'}
-    top_wdh_geraet = top_wdh_value = top_gewicht_geraet = top_gewicht_value = None
-
-    if needed.issubset(df.columns) and not df.empty:
-        # Pro Gerät & Tag mitteln, dann über Tage mitteln
-        per_day = (df.groupby(['gerät', 'datum'], as_index=False)
-                     .agg(
-                         wdh_day_mean=('avg_wdh', 'mean'),
-                         gewicht_day_mean=('avg_gewicht', 'mean'),
-                     ))
-        per_device = (per_day.groupby('gerät', as_index=False)
-                           .agg(
-                               wdh_mean_over_days=('wdh_day_mean', 'mean'),
-                               gewicht_mean_over_days=('gewicht_day_mean', 'mean'),
-                           ))
-
-        if not per_device.empty:
-            # Top nach Wdh
-            idx_w = per_device['wdh_mean_over_days'].idxmax()
-            if pd.notna(idx_w):
-                top_wdh_geraet = str(per_device.loc[idx_w, 'gerät'])
-                top_wdh_value  = float(round(per_device.loc[idx_w, 'wdh_mean_over_days'], 1))
-
-            # Top nach Gewicht
-            idx_g = per_device['gewicht_mean_over_days'].idxmax()
-            if pd.notna(idx_g):
-                top_gewicht_geraet = str(per_device.loc[idx_g, 'gerät'])
-                top_gewicht_value  = float(round(per_device.loc[idx_g, 'gewicht_mean_over_days'], 1))
-
     return {
         "total_visits": int(total_visits),
         "avg_visits_per_week": float(round(avg_visits_per_week, 2)),
         "avg_geraete_per_visit": float(round(avg_geraete_per_visit, 2)),
         "lieblingsgeraet": lieblingsgeraet,
-        "top_wdh_geraet": top_wdh_geraet,
-        "top_wdh_value": top_wdh_value,
-        "top_gewicht_geraet": top_gewicht_geraet,
-        "top_gewicht_value": top_gewicht_value,
     }
