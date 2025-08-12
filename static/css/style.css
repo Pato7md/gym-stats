@@ -223,7 +223,7 @@ label {
 .dataTables_wrapper .dataTables_scrollHead thead th .th-long  { display: inline !important; }
 
 /* Handy: lange Titel aus, kurze an */
-@media (max-width: 575.98px) {
+@media (max-width: 700.98px) {
   #my-table thead th .th-long  { display: none !important; }
   #my-table thead th .th-short { display: inline-block !important; font-weight: 600; }
 

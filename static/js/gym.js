@@ -14,6 +14,7 @@ const debounce = (fn, wait = 150) => {
 
 // Bindet alle Event-Listener, sobald DOM fertig geladen ist
 document.addEventListener('DOMContentLoaded', () => {
+
   const form = document.querySelector('#filter-form');
   const metricSelect = document.getElementById('metric');
   const personSelect = document.getElementById('person'); // kann jetzt im Header liegen
@@ -67,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial laden
   fetchAndRender();
+  
+  document.querySelectorAll('#my-table thead .th-short[data-bs-toggle="tooltip"]')
+  .forEach(el => new bootstrap.Tooltip(el));
 });
 
 
