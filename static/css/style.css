@@ -5,7 +5,7 @@
   --text: #e0e0e0;
   --text-strong: #fff;
   --border: #444;
-  --main-green: #00695c; /* Falls du ändern willst, nur hier */
+  --main-green: #00695c;
 }
 
 html, body {
@@ -15,16 +15,7 @@ html, body {
   overflow-anchor: none !important;
 }
 
-
-
 h1 {font-size: 2.3rem !important;}
-
-/* Nur für Handy */
-@media (max-width: 575.98px) {
-  h1 {font-size: 1.4rem !important;}
-}
-
-
 
 h1, h2, h3, h4 { color: var(--text-strong); }
 
@@ -111,8 +102,6 @@ label {
 }
 
 
-
-
 /* Headline Person Dropdown */
 #person-form > span.text-white {
   font-size: 1.4rem;
@@ -125,22 +114,6 @@ label {
   padding-bottom: 0.5rem;
   height: auto;
 }
-
-/* Nur für Handy */
-@media (max-width: 575.98px) {
-  #person-form > span.text-white {
-    font-size: 1rem; 
-  }
-
-  #person.form-select-sm {
-    font-size: 0.9rem; 
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-  }
-}
-
-
-
 
 
 /* Karten Layout */
@@ -177,9 +150,51 @@ label {
 }
 
 
-/* Tablele*/
+/* Tabelle*/
 .table,
 .table th,
 .table td {
   border-color: rgba(255, 255, 255, 0.04) !important; 
+}
+
+
+
+
+
+/*-----------*/
+/*---Handy---*/
+/*-----------*/
+@media (max-width: 575.98px) {
+
+  h1 {font-size: 1.4rem !important;}
+
+
+  /* Zwischen Überschriften */
+  .section-title {
+    font-size: 1.1rem !important;  
+    margin: 0.8rem 0 0.4rem 0 !important;
+    padding: 0.2rem 0.3rem; 
+  }
+
+
+  /* Headline Person Dropdown */
+  #person-form > span.text-white {
+    font-size: 1rem; 
+  }
+
+  #person.form-select-sm {
+    font-size: 0.9rem; 
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+
+  /* Normale Bootstrap-Dropdowns */
+  select.form-select,
+  select.form-select-sm {
+    font-size: 1rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+
+
 }
