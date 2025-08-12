@@ -15,7 +15,16 @@ html, body {
   overflow-anchor: none !important;
 }
 
+
+
 h1 {font-size: 2.3rem !important;}
+
+/* Nur für Handy */
+@media (max-width: 575.98px) {
+  h1 {font-size: 1.4rem !important;}
+}
+
+
 
 h1, h2, h3, h4 { color: var(--text-strong); }
 
@@ -91,54 +100,6 @@ label {
 
 
 
-/* Show Entries Bereich */
-.dataTables_length select {
-  background: var(--bg) !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: .375rem !important;
-  padding: .25rem .5rem !important;
-}
-
-.dataTables_length label {
-  color: var(--text-strong) !important;
-}
-
-
-
-/* Pagination-Bereich */
-.dataTables_paginate {
-  display: flex !important;
-  gap: .25rem !important;
-  justify-content: center !important;
-  padding: .5rem 0 !important;
-}
-
-.dataTables_paginate a.paginate_button {
-  background: var(--bg-elev) !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-  padding: .25rem .5rem !important;
-  border-radius: .375rem !important;
-  cursor: pointer !important;
-}
-
-.dataTables_paginate a.paginate_button.current {
-  background: var(--text-strong) !important;
-  color: var(--bg) !important;
-  border-color: var(--text-strong) !important;
-  font-weight: 600 !important;
-}
-
-.dataTables_paginate a.paginate_button:not(.current) {
-  color: var(--text-strong) !important; /* bei dir: weiß */
-}
-
-
-
-
-
-
 /* Zwischen Überschriften */
 .section-title { 
   color: #e0f2f1 !important; /* helles, leicht grünliches Weiß */
@@ -165,6 +126,18 @@ label {
   height: auto;
 }
 
+/* Nur für Handy */
+@media (max-width: 575.98px) {
+  #person-form > span.text-white {
+    font-size: 1rem; 
+  }
+
+  #person.form-select-sm {
+    font-size: 0.9rem; 
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+}
 
 
 
