@@ -204,7 +204,7 @@ label {
 
   .mb-3 .form-select,
   .mb-3 .form-control {
-    flex: 0 0 60%;     /* Statt 100% nur 60% Breite */
+    flex: 0 0 50%;     /* Statt 100% nur 60% Breite */
     max-width: 200px;  /* Optional maximale Breite */
   }
 
