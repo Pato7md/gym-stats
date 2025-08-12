@@ -170,7 +170,7 @@ label {
 
   /* Headline Person Dropdown */
   #person-form > span.text-white {
-    font-size: 0.7rem; 
+    font-size: 0.8rem; 
   }
 
   #person.form-select-sm {
@@ -208,16 +208,28 @@ label {
     max-width: 200px;  /* Optional maximale Breite */
   }
 
-  #my-table th::after {
-    content: attr(data-short);
-    display: block;
-    font-weight: bold;
-  }
-  #my-table th {
-    font-size: 0; /* Lange Namen ausblenden */
-  }
-  #my-table th::after {
-    font-size: 0.9rem; /* Kurzform einblenden */
-  }
-
 }
+
+
+
+
+
+/* Standard: nur langer Titel sichtbar */
+#my-table thead th .th-short { display: none !important; }
+#my-table thead th .th-long  { display: inline !important; }
+
+/* Falls DataTables einen separaten Header rendert (scrollHead) */
+.dataTables_wrapper .dataTables_scrollHead thead th .th-short { display: none !important; }
+.dataTables_wrapper .dataTables_scrollHead thead th .th-long  { display: inline !important; }
+
+/* Handy: lange Titel aus, kurze an */
+@media (max-width: 575.98px) {
+  #my-table thead th .th-long  { display: none !important; }
+  #my-table thead th .th-short { display: inline-block !important; font-weight: 600; }
+
+  .dataTables_wrapper .dataTables_scrollHead thead th .th-long  { display: none !important; }
+  .dataTables_wrapper .dataTables_scrollHead thead th .th-short { display: inline-block !important; font-weight: 600; }
+}
+
+/* Optional: keine abgekürzten Unterstreichungen beim <abbr> */
+#my-table thead abbr.th-short { text-decoration: none; border-bottom: 0; }
