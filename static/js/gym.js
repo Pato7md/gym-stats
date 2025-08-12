@@ -69,8 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial laden
   fetchAndRender();
   
-  document.querySelectorAll('#my-table thead .th-short[data-bs-toggle="tooltip"]')
-  .forEach(el => new bootstrap.Tooltip(el));
 });
 
 

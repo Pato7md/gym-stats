@@ -161,10 +161,27 @@ label {
 
 
 
+/* Standard: nur langer Titel sichtbar */
+#my-table thead th .th-short { display: none !important; }
+#my-table thead th .th-long  { display: inline !important; }
+
+/* Falls DataTables einen separaten Header rendert (scrollHead) */
+.dataTables_wrapper .dataTables_scrollHead thead th .th-short { 
+  display: none !important; 
+}
+
+.dataTables_wrapper .dataTables_scrollHead thead th .th-long  { 
+  display: inline !important; 
+}
+
+
+
+
+
 /*-----------*/
 /*---Handy---*/
 /*-----------*/
-@media (max-width: 575.98px) {
+@media (max-width: 650.98px) {
 
   h1 {font-size: 1.4rem !important;}
 
@@ -208,28 +225,12 @@ label {
     max-width: 200px;  /* Optional maximale Breite */
   }
 
-}
-
-
-
-
-
-/* Standard: nur langer Titel sichtbar */
-#my-table thead th .th-short { display: none !important; }
-#my-table thead th .th-long  { display: inline !important; }
-
-/* Falls DataTables einen separaten Header rendert (scrollHead) */
-.dataTables_wrapper .dataTables_scrollHead thead th .th-short { display: none !important; }
-.dataTables_wrapper .dataTables_scrollHead thead th .th-long  { display: inline !important; }
-
-/* Handy: lange Titel aus, kurze an */
-@media (max-width: 700.98px) {
+  /* TAbellen Layout Anpassung */
   #my-table thead th .th-long  { display: none !important; }
   #my-table thead th .th-short { display: inline-block !important; font-weight: 600; }
-
   .dataTables_wrapper .dataTables_scrollHead thead th .th-long  { display: none !important; }
   .dataTables_wrapper .dataTables_scrollHead thead th .th-short { display: inline-block !important; font-weight: 600; }
 }
 
-/* Optional: keine abgekürzten Unterstreichungen beim <abbr> */
-#my-table thead abbr.th-short { text-decoration: none; border-bottom: 0; }
+
+
