@@ -203,7 +203,7 @@ label {
   }
 
 
-  /*Drodown Beschriftung ändern*/
+  /*Drodown Beschriftung*/
   .mb-3 {
     display: flex;
     align-items: center;
@@ -214,12 +214,12 @@ label {
   .mb-3 .form-label {
     margin-bottom: 0;
     white-space: nowrap;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
   }
 
   .mb-3 .form-select,
   .mb-3 .form-control {
-    flex: 0 0 38%;     /* Statt 100% nur 60% Breite */
+    flex: 0 0 38%;     
     max-width: 200px;  /* Optional maximale Breite */
   }
 
