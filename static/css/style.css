@@ -178,6 +178,12 @@ label {
 
 
   /* Headline Person Dropdown */
+  #person-form {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center; 
+  }
+
   #person-form > span.text-white {
     font-size: 1rem; 
   }
@@ -186,14 +192,6 @@ label {
     font-size: 0.9rem; 
     padding-top: 0.3rem;
     padding-bottom: 0.3rem;
-  }
-
-  /* Normale Bootstrap-Dropdowns */
-  select.form-select,
-  select.form-select-sm {
-    font-size: 1rem;
-    padding-top: 0.4rem;
-    padding-bottom: 0.4rem;
   }
 
 
