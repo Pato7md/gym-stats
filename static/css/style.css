@@ -176,8 +176,6 @@ label {
 
 
 
-
-
 /*-----------*/
 /*---Handy---*/
 /*-----------*/
@@ -225,11 +223,17 @@ label {
     max-width: 200px;  /* Optional maximale Breite */
   }
 
-  /* TAbellen Layout Anpassung */
+  /* Tabellen Layout Anpassung */
   #my-table thead th .th-long  { display: none !important; }
   #my-table thead th .th-short { display: inline-block !important; font-weight: 600; }
   .dataTables_wrapper .dataTables_scrollHead thead th .th-long  { display: none !important; }
   .dataTables_wrapper .dataTables_scrollHead thead th .th-short { display: inline-block !important; font-weight: 600; }
+
+  #my-table {
+    font-size: 0.9rem; /* allgemein kleinere Schrift */
+  }
+
+
 }
 
 
