@@ -208,5 +208,16 @@ label {
     max-width: 200px;  /* Optional maximale Breite */
   }
 
+  #my-table th::after {
+    content: attr(data-short);
+    display: block;
+    font-weight: bold;
+  }
+  #my-table th {
+    font-size: 0; /* Lange Namen ausblenden */
+  }
+  #my-table th::after {
+    font-size: 0.9rem; /* Kurzform einblenden */
+  }
 
 }
