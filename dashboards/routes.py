@@ -35,10 +35,17 @@ def dashboard():
 
     return render_template(
         'gym.html',
-        personen=personen, gyms=gyms, person=person, gym=gym,
-        start=start, end=end, metric=metric,
-        geraete=geraete, geraete_options=geraete_options,
-        table=table, plot_html=plot_html,
+        personen=personen, 
+        gyms=gyms, 
+        person=person, 
+        gym=gym,
+        start=start, 
+        end=end,
+        metric=metric,
+        geraete=geraete, 
+        geraete_options=geraete_options,
+        table=table, 
+        plot_html=plot_html,
         overview_stats=overview_stats  
     )
 
@@ -120,8 +127,8 @@ def api_gym_plot():
 
     if not all([person, gym, start, end, metric]):
         return jsonify({'error': 'Fehlende Parameter'}), 400
-    if not geraete:
-        return ('', 204)
+
+    geraete = get_geraete_options(df, person, gym, start, end) or []
 
     filtered_df = get_filtered_data(df, person, gym, geraete, start, end)
     if filtered_df.empty:
@@ -130,7 +137,8 @@ def api_gym_plot():
     agg, fig = get_aggregated_data(filtered_df, metric)
     if not fig or not getattr(fig, 'data', None):
         return ('', 204)
-
+    
+    fig.update_layout(title=None, margin=dict(t=24))  # Titel raus, kleiner Top-Margin
     fig.update_traces(mode='lines+markers')
     fig.update_xaxes(tickformat="%Y-%m-%d")
     try:
@@ -140,7 +148,8 @@ def api_gym_plot():
         return jsonify({'error': f'Fehler beim Serialisieren der Grafik: {e}'}), 500
 
 
-# Tabelle 2 Aufruf - User-Stats
+
+# Overview User-Stats
 @gym_bp.route('/api/gym-overview')
 def api_gym_overview():
     person = request.args.get('person')

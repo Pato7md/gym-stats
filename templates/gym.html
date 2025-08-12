@@ -14,7 +14,7 @@
 
   <div class="row g-3 align-items-start">
     
-    <div class="col-12 col-md-2">
+    <div class="col-12 col-md-3">
       <form id="filter-form" class="mb-4">
 
         <div class="mb-3">
@@ -73,40 +73,33 @@
       </div>
     </div>
 
-    
-    
-    <div class="col-12 col-md-1">
-      <form id="filter-form" class="mb-4">
-
-        <div id="select-buttons" class="d-flex flex-column gap-2">
-          <button id="select-all" class="btn btn-sm btn-primary w-100">Alle</button>
-          <button id="deselect-all" class="btn btn-sm btn-secondary w-100">Keine</button>
-        </div>
-        
-      </form>
-    </div>
-
-
-
   </div>
 
 
   <div class="section-title">Trainings-Fortschritt</div>
 
+
   <div class="row mt-4">
     <div class="col-12">
       <div class="position-relative w-100">
-        <div class="metric-floating flex-column">
-          <select id="metric" name="metric" class="form-select form-select-sm">
+
+        <div class="plot-title d-flex align-items-center flex-wrap mb-2">
+          <select id="metric" name="metric" class="form-select form-select-sm w-auto">
             <option value="volumen" {% if metric == 'volumen' %}selected{% endif %}>Trainingsvolumen</option>
             <option value="gewicht" {% if metric == 'gewicht' %}selected{% endif %}>Mittleres Gewicht</option>
             <option value="wdh" {% if metric == 'wdh' %}selected{% endif %}>Mittlere Wiederholungen</option>
           </select>
+          <span class="ms-2 text-light">pro Gerät über die Zeit</span>
         </div>
+        
         <div id="plot-container"></div>
+
+
       </div>
     </div>
   </div>
+
+
 </div>
 {% endblock %}
 

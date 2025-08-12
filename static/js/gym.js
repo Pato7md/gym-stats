@@ -3,9 +3,6 @@ console.log("gym.js loaded!");
 // DataTables Instanz gespeichert, damit ich sie zerstören & neu initiieren kann
 let tableInstance = null;
 
-// Menge aller aktuell markierten Geräte
-let selectedGeraete = new Set(); 
-
 // Verhindert doppeltes Funktions-Laufen
 const debounce = (fn, wait = 150) => {
   let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
@@ -28,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (form) {
     form.querySelectorAll('#gym, #start, #end').forEach(el =>
       el.addEventListener('change', async () => {
-        selectedGeraete.clear();
         await fetchAndRender();
       })
     );
@@ -37,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Person-Dropdown separat behandeln (unabhängig vom DOM-Ort)
   if (personSelect) {
     personSelect.addEventListener('change', async () => {
-      selectedGeraete.clear();
       await fetchAndRender();
     });
   }
@@ -47,25 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
     metricSelect.addEventListener('change', fetchAndRenderPlot);
   }
 
-  // Buttons: Alle auswählen / abwählen
-  $(document)
-    .off('click', '#select-all')
-    .on('click', '#select-all', e => {
-      e.preventDefault();
-      selectedGeraete = new Set(getAllGeraeteFromTable());
-      highlightSelection();
-      fetchAndRenderPlot();
-      markLongTextValues();
-    })
-    .off('click', '#deselect-all')
-    .on('click', '#deselect-all', e => {
-      e.preventDefault();
-      selectedGeraete.clear();
-      highlightSelection();
-      fetchAndRenderPlot();
-      markLongTextValues();
-    });
-
   // Initial laden
   fetchAndRender();
   
@@ -73,23 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// Hilfs-Funktion
-function getAllGeraeteFromTable(){
-  const out=[]; document.querySelectorAll('#my-table tbody tr').forEach(r=>{
-    if(r.dataset.geraet) out.push(r.dataset.geraet);
-  }); return out;
-}
-
-// Hilfs-Funktion
-function highlightSelection(){
-  document.querySelectorAll('#my-table tbody tr').forEach(row=>{
-    row.classList.toggle('table-active', selectedGeraete.has(row.dataset.geraet));
-  });
-}
-
-
 // Baut den Querystring für die API Request
-function buildParams({includeMetric=true, includeGeraete=false}={}){
+function buildParams({includeMetric=true}={}){
   const form = document.querySelector('#filter-form');
   const metricSelect = document.getElementById('metric');
   const personSelect = document.getElementById('person');
@@ -104,10 +65,6 @@ function buildParams({includeMetric=true, includeGeraete=false}={}){
 
   if(includeMetric && metricSelect && !params.has('metric')) {
     params.append('metric', metricSelect.value);
-  }
-  
-  if(includeGeraete && selectedGeraete.size>0) {
-    selectedGeraete.forEach(g => params.append('geraete', g));
   }
   
   params.append('_ts', Date.now()); // cache bust
@@ -135,19 +92,15 @@ async function fetchAndRender(){
 
   tbodyEl.innerHTML = await res.text();
 
-  // Prüfen, ob überhaupt Zeilen vorhanden sind
-  const allGeraete = getAllGeraeteFromTable();
-  if (allGeraete.length === 0) {
-    // Keine Geräte → Meldung ins Diagramm setzen
-    document.getElementById('plot-container').innerHTML = '<p>Keine Geräte für diesen Zeitraum.</p>';
-  }
+  const hasRows = !!tbodyEl.querySelector('tr');
+
 
   // Zielbox leeren, damit keine Alt-Controls liegen bleiben
   const bottomBox = document.getElementById('dt-controls-bottom');
   if(bottomBox) bottomBox.innerHTML = '';
 
   // DataTables neu initialisieren (nur wenn es Zeilen gibt)
-  if (allGeraete.length > 0) {
+  if (hasRows) {
     tableInstance = $('#my-table').DataTable({
       paging:false,  
       //pageLength:5, 
@@ -186,39 +139,22 @@ async function fetchAndRender(){
         }
       ]
     });
-
-    // Click-Handler auf Tabellenzeilen
-    $('#my-table tbody').off('click', 'tr').on('click', 'tr', function(e){
-      const g = this.dataset.geraet; if(!g) return;
-      if(e.ctrlKey || e.metaKey){
-        selectedGeraete.has(g) ? selectedGeraete.delete(g) : selectedGeraete.add(g);
-      } else {
-        selectedGeraete.clear(); selectedGeraete.add(g);
-      }
-      highlightSelection(); 
-      fetchAndRenderPlot();
-      markLongTextValues();
-    });
+  } else {
+    // Optional: Hinweis fürs Diagramm, wenn keine Zeilen
+    document.getElementById('plot-container').innerHTML = '<p>Keine Geräte für diesen Zeitraum.</p>';
   }
-
-  // Falls noch keine Auswahl, aber Geräte da → alle auswählen
-  if (selectedGeraete.size === 0 && allGeraete.length > 0) {
-    selectedGeraete = new Set(allGeraete);
-  }
-  highlightSelection();
 
   await fetchAndRenderPlot();
   await fetchAndRenderOverview();
   markLongTextValues();
 }
 
-// ⬇️ NEU: Holt Overview-HTML von /api/gym-overview und rendert sie
 async function fetchAndRenderOverview(){
   const container = document.getElementById('overview');
   if (!container) return;
 
   try{
-    const res = await fetch(`/api/gym-overview?${buildParams({includeMetric:false, includeGeraete:true})}`);
+    const res = await fetch(`/api/gym-overview?${buildParams({includeMetric:false})}`);
     if(!res.ok){
       const t = await res.text().catch(()=> '');
       console.error('[overview] HTTP error:', res.status, t);
@@ -242,10 +178,10 @@ function markLongTextValues() {
   });
 }
 
-// Holt JSON Daten von api/gym-plot
+
 async function fetchAndRenderPlot(){
   const container = document.getElementById('plot-container');
-  const res = await fetch(`/api/gym-plot?${buildParams({includeMetric:true, includeGeraete:true})}`);
+  const res = await fetch(`/api/gym-plot?${buildParams({includeMetric:true})}`);
 
   try{
     if(res.status===204){ container.innerHTML = '<p>Kein Diagramm für diese Auswahl.</p>'; return; }
