@@ -191,19 +191,21 @@ label {
   /*Drodown Beschriftung ändern*/
   .mb-3 {
     display: flex;
-    align-items: center;      /* Vertikal zentrieren */
-    gap: 0.5rem;               /* Abstand zwischen Label und Feld */
+    align-items: center;
+    justify-content: flex-end; /* Rechtsbündig alles in der Zeile */
+    gap: 0.5rem;
   }
 
   .mb-3 .form-label {
-    margin-bottom: 0;          /* Standard-Abstand entfernen */
-    white-space: nowrap;       /* Label nicht umbrechen */
-    font-size: 0.9rem;          /* Etwas kleiner für Handy */
+    margin-bottom: 0;
+    white-space: nowrap;
+    font-size: 0.9rem;
   }
 
   .mb-3 .form-select,
   .mb-3 .form-control {
-    flex: 1;                    /* Feld nimmt restliche Breite */
+    flex: 0 0 60%;     /* Statt 100% nur 60% Breite */
+    max-width: 200px;  /* Optional maximale Breite */
   }
 
 
