@@ -80,21 +80,22 @@
 
   <div class="col-12">
     <div class="position-relative w-100">
-
-      <div class="plot-title d-flex align-items-center flex-wrap mb-2">
-        <select id="metric" name="metric" class="form-select form-select-sm w-auto">
-          <option value="volumen" {% if metric == 'volumen' %}selected{% endif %}>Trainingsvolumen</option>
-          <option value="gewicht" {% if metric == 'gewicht' %}selected{% endif %}>Mittleres Gewicht</option>
-          <option value="wdh" {% if metric == 'wdh' %}selected{% endif %}>Mittlere Wiederholungen</option>
-        </select>
-        <span class="ms-2 text-light">pro Gerät im Zeitverlauf</span>
+  
+      <div class="row g-2 align-items-center mb-2">
+        <div class="col-auto">
+          <select id="metric" name="metric" class="form-select form-select-sm">
+            <option value="gewicht" {% if metric == 'gewicht' %}selected{% endif %}>Mittleres Gewicht</option>
+            <option value="wdh" {% if metric == 'wdh' %}selected{% endif %}>Mittlere Wiederholungen</option>
+            <option value="volumen" {% if metric == 'volumen' %}selected{% endif %}>Trainingsvolumen</option>
+          </select>
+        </div>
       </div>
-      
+  
       <div id="plot-container"></div>
-
-
+  
     </div>
   </div>
+  
 
 
 </div>

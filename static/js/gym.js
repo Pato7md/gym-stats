@@ -48,8 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
-// Baut den Querystring für die API Request
 function buildParams({includeMetric=true}={}){
   const form = document.querySelector('#filter-form');
   const metricSelect = document.getElementById('metric');
@@ -71,8 +69,6 @@ function buildParams({includeMetric=true}={}){
   return params.toString();
 }
 
-
-// Holt Tabellendaten aus api/gym-table
 async function fetchAndRender(){
   const tableEl = document.getElementById('my-table');
   const tbodyEl = document.getElementById('table-body');
@@ -179,26 +175,79 @@ function markLongTextValues() {
 }
 
 
-async function fetchAndRenderPlot(){
-  const container = document.getElementById('plot-container');
-  const res = await fetch(`/api/gym-plot?${buildParams({includeMetric:true})}`);
 
-  try{
-    if(res.status===204){ container.innerHTML = '<p>Kein Diagramm für diese Auswahl.</p>'; return; }
-    if(!res.ok){
-      const t = await res.text().catch(()=> ''); console.error('[plot] HTTP error:', res.status, t);
-      container.innerHTML = `<p style="color:#f88;">Fehler beim Laden des Diagramms (${res.status}).</p>`;
+
+let originalFigData = [];
+
+async function fetchAndRenderPlot() {
+  const container = document.getElementById('plot-container');
+
+  try {
+    const res = await fetch(`/api/gym-plot?${buildParams({ includeMetric: true })}`);
+    if (!res.ok) {
+      container.innerHTML = '<p style="color:#f88;">Fehler beim Laden des Diagramms.</p>';
       return;
     }
+
     const fig = await res.json();
-    container.innerHTML = '';
-    if(Array.isArray(fig?.data) && fig.data.length>0){
-      Plotly.newPlot(container, fig.data, fig.layout||{}, {responsive:true});
-    }else{
+
+    if (!Array.isArray(fig?.data) || fig.data.length === 0) {
       container.innerHTML = '<p>Kein Diagramm für diese Auswahl.</p>';
+      return;
     }
-  }catch(e){
-    console.error('[plot] JS error:', e);
+
+    // Originaldaten sichern
+    originalFigData = fig.data;
+
+    // Plot mit Legende anzeigen
+    const metricDropdown = document.getElementById('metric');
+    const selectedMetricText = metricDropdown?.options[metricDropdown.selectedIndex]?.text || '';
+
+    const isMobile = window.innerWidth < 650;
+
+    // Layout in Plot nicht mit css steuerbar!
+    const layout = {
+      showlegend: true,
+      legend: isMobile
+        ? {
+            orientation: "h",    // horizontal
+            yanchor: "top",
+            y: -0.3,              // unterhalb der X-Achse
+            xanchor: "center",
+            x: 0.5,
+            font: { size: 8 }    // kleinere Schrift
+          }
+        : {
+            orientation: "v",    // Desktop bleibt vertikal rechts
+            x: 1,
+            y: 1,
+            font: { size: 11 } // Browser-Schriftgröße (1 kleiner als vorher)
+          },
+      title: {
+        text: `${selectedMetricText} pro Gerät im Zeitverlauf`,
+        x: 0,
+        xanchor: "left",
+        pad: { t: 20, l: 10 },
+        font: { size: isMobile ? 14 : 20 }
+      },
+      margin: { t: 50, l: 50, r: 20, b: isMobile ? 100 : 50 } // unten mehr Platz bei Handy
+    };
+
+    const config = {
+      responsive: true,
+      displaylogo: false,
+      modeBarButtonsToRemove: [
+        'zoom2d', 'pan2d', 'select2d', 'lasso2d',
+        'zoomIn2d', 'zoomOut2d', 'autoScale2d', 
+        'hoverClosestCartesian', 'hoverCompareCartesian',
+        'toggleSpikelines', 'resetViewMapbox'
+      ],
+    };
+
+    Plotly.newPlot(container, originalFigData, layout,  config);
+
+  } catch (err) {
+    console.error('[plot] Fehler:', err);
     container.innerHTML = '<p style="color:#f88;">Fehler beim Verarbeiten der Plot-Daten.</p>';
   }
 }
