@@ -3,14 +3,14 @@
 {% block content %}
 <div class="container-fluid">
 
-  <div class="section-title">Deine persönlichen Statistiken</div>
+  <h2 class="section-title">Deine persönlichen Statistiken</h2>
 
-  <div id="overview" class="row g-3 mb-4">
+  <div id="overview" class="mb-4">
     {% include 'partial_overview.html' %}
   </div>
 
 
-  <div class="section-title">Geräte-Auswahl</div>
+  <h2 class="section-title">Geräte-Auswahl</h2>
 
   <div class="row g-3 align-items-start">
     
@@ -39,9 +39,9 @@
       </form>
     </div>
 
-    <div class="col-12 col-md-9">
+    <div class="col-12 col-md-9 mb-3">
       <div class="table-responsive">
-        <table id="my-table" class="table table-striped table-bordered mb-0">
+        <table id="my-table" class="table table-striped table-bordered">
           <thead>
             <tr>
               <th>
@@ -76,26 +76,23 @@
   </div>
 
 
-  <div class="section-title">Trainings-Fortschritt</div>
+  <h2 class="section-title">Trainings-Fortschritt</h2>
 
+  <div class="col-12">
+    <div class="position-relative w-100">
 
-  <div class="row mt-4">
-    <div class="col-12">
-      <div class="position-relative w-100">
-
-        <div class="plot-title d-flex align-items-center flex-wrap mb-2">
-          <select id="metric" name="metric" class="form-select form-select-sm w-auto">
-            <option value="volumen" {% if metric == 'volumen' %}selected{% endif %}>Trainingsvolumen</option>
-            <option value="gewicht" {% if metric == 'gewicht' %}selected{% endif %}>Mittleres Gewicht</option>
-            <option value="wdh" {% if metric == 'wdh' %}selected{% endif %}>Mittlere Wiederholungen</option>
-          </select>
-          <span class="ms-2 text-light">pro Gerät über die Zeit</span>
-        </div>
-        
-        <div id="plot-container"></div>
-
-
+      <div class="plot-title d-flex align-items-center flex-wrap mb-2">
+        <select id="metric" name="metric" class="form-select form-select-sm w-auto">
+          <option value="volumen" {% if metric == 'volumen' %}selected{% endif %}>Trainingsvolumen</option>
+          <option value="gewicht" {% if metric == 'gewicht' %}selected{% endif %}>Mittleres Gewicht</option>
+          <option value="wdh" {% if metric == 'wdh' %}selected{% endif %}>Mittlere Wiederholungen</option>
+        </select>
+        <span class="ms-2 text-light">pro Gerät im Zeitverlauf</span>
       </div>
+      
+      <div id="plot-container"></div>
+
+
     </div>
   </div>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 
-<!--Header des Dokuments-->
+
 <head>
   <meta charset="UTF-8" />
   <title>Gym Dashboard - Pato Analytics</title>
@@ -16,20 +16,14 @@
 </head>
 
 
-
-<!-- Body des Dokuments-->
 <body class="bg-dark text-body">
-
-
-
-
-  <!-- OUTER WRAPPER MIT % BREITE -->
+  
   <div class="outer-wrapper">
 
-   <!-- HEADER: eigener Container -->
-    <div class="container-fluid py-4 border-bottom border-secondary">
+    <!-- HEADER -->
+    <div class="container-fluid py-2 border-bottom border-secondary">
       <header class="d-flex justify-content-between align-items-center flex-wrap">
-        <h1 class="h3 text-white mb-2 mb-md-0">Gym Analytics Dashboard</h1>
+        <h1>Gym Dashboard</h1>
         <form id="person-form" class="mb-0 d-flex align-items-center gap-2">
           <span class="text-white">Welcome,</span>
           <select id="person" name="person" class="form-select form-select-sm">
@@ -41,29 +35,26 @@
       </header>
     </div>
 
-    <!-- MAIN CONTENT: eigener Container -->
+    <!-- MAIN CONTENT -->
     <div class="container-fluid py-4">
       <main>
         {% block content %}{% endblock %}
       </main>
     </div>
 
-    <!-- FOOTER: eigener Container -->
+    <!-- FOOTER -->
     <div class="container-fluid py-3 border-top border-secondary text-center text-white">
       <footer class="app-footer m-0">
         <small>&copy; 2025 Pato Analytics</small>
       </footer>
     </div>
 
-</div> <!-- /outer wrapper -->
-
-
-
+  </div> 
 
   <!-- Vendor JS -->
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   {% block scripts %}{% endblock %}
-</body>
 
+</body>
 
 </html>

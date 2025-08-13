@@ -1,4 +1,3 @@
-/* Base Dark Theme */
 :root {
   --bg: #121212;
   --bg-elev: #1e1e1e;
@@ -8,6 +7,7 @@
   --main-green: #00695c;
 }
 
+
 html, body {
   background: var(--bg);
   color: var(--text);
@@ -15,10 +15,50 @@ html, body {
   overflow-anchor: none !important;
 }
 
-h1 {font-size: 2.3rem !important;}
+.container-fluid.py-2.border-bottom.border-secondary {
+  background-color: #003d33; /* neutrales dunkleres Grau */
+}
 
-h1, h2, h3, h4 { color: var(--text-strong); }
 
+label {color: var(--text-strong);}
+
+.outer-wrapper {max-width: 55%; margin: 0 auto;}
+@media (max-width: 1200px) {.outer-wrapper {max-width: 80%;}}
+@media (max-width: 992px)  {.outer-wrapper {max-width: 95%;}}
+@media (max-width: 650px)  {.outer-wrapper {max-width: 100%;}}
+
+
+/* Zusammengeführter Header mit Person Dropdown */
+h1 {
+  font-size: 2.2rem;  
+  color: var(--text-strong);
+}
+@media (max-width: 650px) {h1 {
+    font-size: 1.4rem;
+}}
+
+#person-form > span.text-white {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+@media (max-width: 650.98px) {#person-form > span.text-white {
+  font-size: 0.8rem; 
+}}
+
+#person.form-select-sm {
+  font-size: 1.2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  height: auto;
+}
+@media (max-width: 650.98px) {#person.form-select-sm {
+    font-size: 0.8rem; 
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+}}
+
+
+/* Footer */
 .app-footer {
   color: var(--text-strong);
   background: #333;
@@ -26,39 +66,15 @@ h1, h2, h3, h4 { color: var(--text-strong); }
   text-align: center;
   border-radius: .5rem;
 }
+@media (max-width: 650px) {.app-footer {
+    padding: 6px;
+    font-size: 0.85rem;
+}}
 
 
 
-/* Layout generell*/
-.outer-wrapper {
-  max-width: 65%;
-  margin: 0 auto;
-}
-
-@media (max-width: 1200px) {
-  .outer-wrapper {
-    max-width: 80%;
-  }}
-
-@media (max-width: 992px) {
-  .outer-wrapper {
-    max-width: 95%;
-  }}
 
 
-
-/* Dropdown Header */
-label {
-  color: var(--text-strong);
-}
-
-
-/* Sidebar Layout */
-.table-and-sidebar {
-  display: flex;
-  align-items: stretch;
-  gap: .75rem;
-}
 
 
 /* Plot & Plot-Dropdown */
@@ -91,140 +107,36 @@ label {
 
 
 
-/* Zwischen Überschriften */
+/* Zwischen Überschriften H2*/
 .section-title { 
   color: #e0f2f1 !important; /* helles, leicht grünliches Weiß */
   background: linear-gradient(90deg, #004d40, #00695c); /* Dunkel-Petrol → Mittel-Petrol */
-  font-size: 1.5rem !important;
   font-weight: 600 !important;
-  margin: 0.2rem 0 0.2rem 0 !important;
-  border-bottom: 2px solid #e8f5e9;
+  border-bottom: 2px solid #e8f5e9; /*weiße Unter-Linie*/
+  font-size: 1.5rem !important;
 }
+@media (max-width: 650.98px) {.section-title {
+    font-size: 1.1rem !important; 
+    padding: 0.2rem 0.3rem !important; 
+}}
 
 
-/* Headline Person Dropdown */
-#person-form > span.text-white {
-  font-size: 1.4rem;
-  line-height: 1;
-}
 
-#person.form-select-sm {
-  font-size: 1.2rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  height: auto;
-}
-
-
-/* Karten Layout */
-@media (min-width: 1400px) {
-  .stat-card { flex: 0 0 16.66%; max-width: 16.66%; }
-}
-
-.card-body {
-  display: flex;
-  flex-direction: column;
-}
-
-.ga-stat-title {
-  color: #d0d0d0 !important;
-  font-size: 0.85rem;
-  line-height: 1.2;
-}
-
-.ga-stat-value {
-  color: #ffffff !important;
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
-  
-  flex: 1; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: clamp(1.6rem, 2.2vw, 2.3rem);
-}
-
-.ga-stat-value.long-text {
-  font-size: clamp(0.8rem, 1.4vw, 1.3rem) !important;
-}
-
-
-/* Tabelle*/
-.table,
-.table th,
-.table td {
+/* TABELLE */
+.table, .table th, .table td {
   border-color: rgba(255, 255, 255, 0.04) !important; 
 }
 
-
-
-
-
-/* Standard: nur langer Titel sichtbar */
 #my-table thead th .th-short { display: none !important; }
 #my-table thead th .th-long  { display: inline !important; }
 
-/* Falls DataTables einen separaten Header rendert (scrollHead) */
 .dataTables_wrapper .dataTables_scrollHead thead th .th-short { 
   display: none !important; 
 }
-
 .dataTables_wrapper .dataTables_scrollHead thead th .th-long  { 
   display: inline !important; 
 }
-
-
-
-/*-----------*/
-/*---Handy---*/
-/*-----------*/
-@media (max-width: 650.98px) {
-
-  h1 {font-size: 1.4rem !important;}
-
-  /* Headline Person Dropdown */
-  #person-form > span.text-white {
-    font-size: 0.8rem; 
-  }
-
-  #person.form-select-sm {
-    font-size: 0.8rem; 
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-  }
-
-  
-  /* Zwischen Überschriften */
-  .section-title {
-    font-size: 1.1rem !important;  
-    margin: 0.2rem 0 0.3rem 0 !important;
-    padding: 0.2rem 0.3rem; 
-  }
-
-
-  /*Drodown Beschriftung*/
-  .mb-3 {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end; /* Rechtsbündig alles in der Zeile */
-    gap: 0.5rem;
-  }
-
-  .mb-3 .form-label {
-    margin-bottom: 0;
-    white-space: nowrap;
-    font-size: 0.85rem;
-  }
-
-  .mb-3 .form-select,
-  .mb-3 .form-control {
-    flex: 0 0 35%;     
-    font-size: 0.85rem;
-    max-width: 200px;  /* Optional maximale Breite */
-  }
-
-  /* Tabellen Layout Anpassung */
+@media (max-width: 650px) {
   #my-table thead th .th-long  { display: none !important; }
   #my-table thead th .th-short { display: inline-block !important; font-weight: 600; }
   .dataTables_wrapper .dataTables_scrollHead thead th .th-long  { display: none !important; }
@@ -232,10 +144,88 @@ label {
 
   #my-table {
     font-size: 0.86rem; 
+}}
+
+
+
+
+
+
+/* Handy Spezifikation */
+/* DROPDOWNS/FILTER */
+@media (max-width: 650px) {
+  #filter-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: nowrap;       /* alles in einer Zeile */
+    align-items: flex-end;   /* Felder unten bündig */
+    margin-bottom: 0rem !important;
+  }
+  #filter-form .mb-3 {
+    flex: 1 1 0;              /* gleichmäßig aufteilen */
+    min-width: 0;             /* verhindert Überlaufen */
+    display: flex;
+    flex-direction: column;   /* Label über Input */
+    margin-bottom: 0rem !important;
+  }
+  #filter-form .mb-3 .form-label {
+    margin-bottom: 0.1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
   }
 
-
+  #filter-form .mb-3 .form-control,
+  #filter-form .mb-3 .form-select {
+    width: 100%;
+    font-size: 0.85rem;
+    max-width: none;     
+  }
 }
 
 
 
+
+
+/* Handy Spezifikation */
+/* Karten Layout */
+@media (min-width: 1400px) {
+  .stat-card { flex: 0 0 16.66%; max-width: 16.66%; }
+}
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+.ga-stat-title {
+  color: #d0d0d0 !important;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+.ga-stat-value {
+  color: #ffffff !important;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  flex: 1; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(1.6rem, 2.2vw, 2.3rem);
+}
+.ga-stat-value.long-text {
+  font-size: clamp(0.8rem, 1.4vw, 1.3rem) !important;
+}
+
+
+
+
+/*Plot beschriftung HANDY*/
+@media (max-width: 576px) {
+  .plot-title .text-light {
+    font-size: 0.8rem; /* kleinerer Text */
+  }
+  .plot-title .form-select {
+    font-size: 0.8rem;       /* Schrift kleiner */
+    height: auto;            /* Höhe anpassen */
+    text-align: left;        /* Text linksbündig */
+  }
+}
