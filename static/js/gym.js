@@ -12,7 +12,90 @@ const debounce = (fn, wait = 150) => {
 // Bindet alle Event-Listener, sobald DOM fertig geladen ist
 document.addEventListener('DOMContentLoaded', () => {
 
-  const form = document.querySelector('#filter-form');
+  // 🔹 Modal-Elemente referenzieren
+  const modal = document.getElementById("inputModal");
+  const openBtn = document.getElementById("openModalBtn");
+  const closeBtn = document.getElementById("closeModalBtn");
+
+  // Öffnen
+  if (openBtn) {
+    openBtn.addEventListener("click", () => {
+      modal.style.display = "block";
+    });
+  }
+
+  // Schließen
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+  }
+
+  // Klick außerhalb schließt Modal
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  // 🔹 Form submit → POST an Flask
+  const workoutForm = document.getElementById("workoutForm");
+  if (workoutForm) {
+    workoutForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+  
+      const formData = {
+        person: document.getElementById("person").value.trim(),
+        gym: document.getElementById("gym_input").value.trim(),
+        geraet: document.getElementById("geraet").value.trim(),
+        saetze: parseInt(document.getElementById("saetze").value) || null,
+        satz1_gew: parseFloat(document.getElementById("satz1_gew").value) || null,
+        satz1_wdh: parseInt(document.getElementById("satz1_wdh").value) || null,
+        satz2_gew: parseFloat(document.getElementById("satz2_gew").value) || null,
+        satz2_wdh: parseInt(document.getElementById("satz2_wdh").value) || null,
+        satz3_gew: parseFloat(document.getElementById("satz3_gew").value) || null,
+        satz3_wdh: parseInt(document.getElementById("satz3_wdh").value) || null,
+        datum: document.getElementById("date").value
+      };
+  
+      try {
+        const res = await fetch("/api/gym-insert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        });
+  
+        const data = await res.json();
+  
+        if (data.status === "success") {
+          modal.style.display = "none";
+  
+          // 🔹 Filterdaten anpassen, falls Datum außerhalb des Zeitraums liegt
+          const startInput = document.getElementById("start");
+          const endInput = document.getElementById("end");
+          const startVal = startInput.value;
+          const endVal = endInput.value;
+  
+          if (data.status === "success") {
+            modal.style.display = "none";
+            await fetchAndRender(); // keine direkte Manipulation von Start/End
+          } else {
+            alert("Fehler beim Speichern: " + (data.error || "unbekannt"));
+          }
+
+          // 🔹 Dashboard neu laden
+          fetchAndRender();
+        } else {
+          alert("Fehler beim Speichern: " + (data.error || "unbekannt"));
+        }
+      } catch (err) {
+        console.error("Fehler beim Senden:", err);
+        alert("Verbindungsfehler beim Speichern");
+      }
+    });
+  }
+
+  const filterForm = document.querySelector('#filter-form');
   const metricSelect = document.getElementById('metric');
   const personSelect = document.getElementById('person'); // kann jetzt im Header liegen
 
@@ -22,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 150));
 
   // Event-Listener für alle Filter im Formular (außer Person, falls außerhalb)
-  if (form) {
-    form.querySelectorAll('#gym, #start, #end').forEach(el =>
+  if (filterForm) {
+    filterForm.querySelectorAll('#gym, #start, #end').forEach(el =>
       el.addEventListener('change', async () => {
         await fetchAndRender();
       })
@@ -80,13 +163,19 @@ async function fetchAndRender(){
   const res = await fetch(`/api/gym-table?${buildParams()}`);
   if(!res.ok){
     tbodyEl.innerHTML = '<tr><td colspan="99">Fehler beim Laden der Tabelle</td></tr>';
-    // Auch Overview leeren/setzen
-    const ov = document.getElementById('overview');
-    if (ov) ov.innerHTML = '<div class="col-12"><p>Keine Daten.</p></div>';   
+    // ...
     return;
   }
 
-  tbodyEl.innerHTML = await res.text();
+  const data = await res.json();
+
+  // Tabelle einsetzen
+  tbodyEl.innerHTML = data.table_html;
+
+  // Start-/Enddatum nur setzen, wenn Werte vorhanden sind
+  if (data.min_date) document.getElementById("start").value = data.min_date;
+  if (data.max_date) document.getElementById("end").value = data.max_date;
+
 
   const hasRows = !!tbodyEl.querySelector('tr');
 
@@ -96,24 +185,24 @@ async function fetchAndRender(){
   if(bottomBox) bottomBox.innerHTML = '';
 
   // DataTables neu initialisieren (nur wenn es Zeilen gibt)
-  if (hasRows) {
+  const headerCount = document.querySelectorAll('#my-table thead th').length;
+  const validRowExists = [...tbodyEl.querySelectorAll('tr')]
+    .some(tr => tr.querySelectorAll('td').length === headerCount);
+  
+
+  if (hasRows && validRowExists) {
     tableInstance = $('#my-table').DataTable({
       paging:false,  
-      //pageLength:5, 
-      //lengthMenu:[5,10,15],
       info:false, 
       searching:false, 
       responsive:true, 
       destroy:true,
       scrollY:'208px', 
-      scrollCollapse:false,
       dom:'rt<"dt-bottom"l p>',
-      language:{ lengthMenu:"Show _MENU_" },
-      pagingType:'simple_numbers',
       order: [[1, 'desc']],
       columnDefs: [
         {
-          targets: 2, // Volumen-Spalte 
+          targets: 2,
           render: function (data, type, row) {
             if (type === 'display' && data != null) {
               return parseInt(data).toLocaleString('de-DE');
@@ -122,7 +211,7 @@ async function fetchAndRender(){
           }
         },
         {
-          targets: [3, 4], // Gewicht & Wdh Spalten
+          targets: [3, 4],
           render: function (data, type, row) {
             if (type === 'display' && data != null) {
               return parseFloat(data).toLocaleString('de-DE', {
@@ -136,7 +225,7 @@ async function fetchAndRender(){
       ]
     });
   } else {
-    // Optional: Hinweis fürs Diagramm, wenn keine Zeilen
+    console.warn('DataTables nicht initialisiert – unpassende Struktur');
     document.getElementById('plot-container').innerHTML = '<p>Keine Geräte für diesen Zeitraum.</p>';
   }
 

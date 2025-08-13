@@ -3,6 +3,10 @@ from .prepare_gymdata import load_data, get_geraete_options, get_filtered_data, 
 import pandas as pd
 import plotly.io as pio
 import traceback
+from write_gymdata import insert_gym_entry
+from importlib import reload
+import dashboards.prepare_gymdata as prepare_gymdata
+
 
 gym_bp = Blueprint('gym', __name__, template_folder='../../templates')
 df = load_data()
@@ -67,6 +71,7 @@ def api_geraete_options():
 # Tabelle
 @gym_bp.route('/api/gym-table')
 def api_gym_table():
+    df = load_data()
     person = request.args.get('person')
     gym    = request.args.get('gym')
     start  = request.args.get('start')
@@ -81,7 +86,11 @@ def api_gym_table():
 
         filtered_df = get_filtered_data(df, person, gym, geraete, start, end)
         if filtered_df.empty:
-            return render_template('partial_table.html', table=[])
+            return jsonify({
+                    "table_html": render_template('partial_table.html', table=[]),
+                    "min_date": None,
+                    "max_date": None
+            })
 
         filtered_df['datum'] = pd.to_datetime(filtered_df['datum']).dt.date
 
@@ -108,8 +117,20 @@ def api_gym_table():
                     'avg_volumen':'Volumen / Besuch','avg_gewicht':'Gewicht / Besuch',
                     'avg_wdh':'Wdh / Besuch'}).to_dict('records'))
 
-        return render_template('partial_table.html', table=table)
+        # Frühestes und spätestes Datum bestimmen (nur Person + Gym filtern)
+        date_df = df[(df['person'] == person) & (df['gym'] == gym)].copy()
+        date_df['datum'] = pd.to_datetime(date_df['datum']).dt.date
 
+        min_date = date_df['datum'].min().isoformat() if not date_df.empty else None
+        max_date = date_df['datum'].max().isoformat() if not date_df.empty else None
+
+        # JSON statt HTML zurückgeben
+        return jsonify({
+            "table_html": render_template('partial_table.html', table=table),
+            "min_date": min_date,
+            "max_date": max_date
+        })
+        
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
@@ -173,3 +194,42 @@ def api_gym_overview():
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': f'Fehler bei Overview-Berechnung: {e}'}), 500
+
+
+@gym_bp.route('/api/gym-insert', methods=['POST'])
+def api_gym_insert():
+    try:
+        data = request.get_json()
+
+        # Pflichtfelder prüfen
+        required_fields = ['person', 'geraet', 'datum']
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return jsonify({"status": "error", "error": f"Fehlendes Feld: {field}"}), 400
+
+        # Insert durchführen
+        new_id = insert_gym_entry(
+            person=data['person'],
+            gym=data.get('gym', ''),  # optional, kann leer sein
+            geraet=data['geraet'],
+            saetze=data.get("saetze"),
+            datum=data['datum'],
+            satz1_gew=data.get('satz1_gew'),
+            satz1_wdh=data.get('satz1_wdh'),
+            satz2_gew=data.get('satz2_gew'),
+            satz2_wdh=data.get('satz2_wdh'),
+            satz3_gew=data.get('satz3_gew'),
+            satz3_wdh=data.get('satz3_wdh'),
+        )
+
+        # 🔹 Direkt nach Insert globale df-Variable neu laden
+        global df
+        reload(prepare_gymdata)
+        df = prepare_gymdata.load_data()
+
+        return jsonify({"status": "success", "id": new_id})
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"status": "error", "error": str(e)}), 500
