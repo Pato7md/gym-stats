@@ -17,9 +17,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const openBtn = document.getElementById("openModalBtn");
   const closeBtn = document.getElementById("closeModalBtn");
 
+  // Person & Gym automatisch ins Modal setzen
+  const headerPersonSelect = document.getElementById('person'); // im Header
+  const modalPersonDisplay = document.getElementById('person-display'); // nur Text
+  const modalPersonInput = document.getElementById('personModal'); // hidden input
+
+  const headerGymSelect = document.getElementById('gym'); // Dropdown im Filter
+  const modalGymDisplay = document.getElementById('gym-display'); // Anzeige im Modal
+  const modalGymInput = document.getElementById('gymModal'); // Hidden Input
+
+  
+  function updateModalPerson() {
+    if (headerPersonSelect && modalPersonDisplay && modalPersonInput) {
+      modalPersonDisplay.textContent = headerPersonSelect.value;
+      modalPersonInput.value = headerPersonSelect.value;
+    }
+  }
+  // Falls im Header gewechselt wird → Modal-Daten auch updaten
+  headerPersonSelect?.addEventListener('change', updateModalPerson);
+
   // Öffnen
   if (openBtn) {
     openBtn.addEventListener("click", () => {
+      const headerPersonSelect = document.getElementById('person'); // Person-Dropdown  
+      const modalPersonDisplay = document.getElementById('person-display');
+      const modalPersonInput = document.getElementById('personModal');
+
+      const headerGymSelect = document.getElementById('gym');       // Gym-Dropdown
+      const modalGymInput = document.getElementById('gymModal');   // Eingabefeld im Modal
+  
+      const dateInput = document.getElementById('date');
+
+      if (headerPersonSelect && modalPersonDisplay && modalPersonInput) {
+        modalPersonDisplay.textContent = headerPersonSelect.value;
+        modalPersonInput.value = headerPersonSelect.value;
+      }
+
+      if (headerGymSelect && modalGymInput) {
+        modalGymInput.value = headerGymSelect.value; // Standardwert setzen
+      }
+
+      if (dateInput && !dateInput.value) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.value = today;
+      }
+
       modal.style.display = "block";
     });
   }
@@ -45,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
   
       const formData = {
-        person: document.getElementById("person").value.trim(),
-        gym: document.getElementById("gym_input").value.trim(),
+        person: document.getElementById("personModal").value.trim(),
+        gym: document.getElementById("gymModal").value.trim(),
         geraet: document.getElementById("geraet").value.trim(),
         saetze: parseInt(document.getElementById("saetze").value) || null,
         satz1_gew: parseFloat(document.getElementById("satz1_gew").value) || null,

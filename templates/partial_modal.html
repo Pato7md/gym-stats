@@ -1,78 +1,85 @@
 <!-- Modal-Overlay -->
 <div id="inputModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" id="closeModalBtn">&times;</span>
-    <h2>Neuer Workout-Eintrag</h2>
-
+  <div class="modal-content position-relative">
+    <span class="close-btn position-absolute top-0 end-0 m-2" id="closeModalBtn">&times;</span>
+    <h3 class="mb-4 fs-4">
+      Neuer Workout-Eintrag <span id="person-display" class="text-white fw-bold"></span>
+    </h3>
     <form id="workoutForm">
-      <!-- Person -->
-      <div class="mb-3">
-        <label for="person" class="form-label">Person</label>
-        <input type="text" id="person" name="person" class="form-control" required>
-      </div>
-
-      <!-- Gym -->
-      <div class="mb-3">
-        <label for="gym_input" class="form-label">Gym</label>
-        <input type="text" id="gym_input" name="gym" class="form-control" required>
-      </div>
-
-      <!-- Gerät -->
-      <div class="mb-3">
-        <label for="geraet" class="form-label">Gerät</label>
-        <input type="text" id="geraet" name="geraet" class="form-control" required>
-      </div>
-
-      <!-- Sätze gesamt -->
-      <div class="mb-3">
-        <label for="saetze" class="form-label">Anzahl Sätze</label>
-        <input type="number" id="saetze" name="saetze" class="form-control" min="1" max="3">
-      </div>
-
-      <!-- Satz 1 -->
-      <div class="row mb-3">
-        <div class="col">
-          <label for="satz1_gew" class="form-label">Satz 1 Gewicht (kg)</label>
-          <input type="number" step="0.5" id="satz1_gew" name="satz1_gew" class="form-control">
+      <input type="hidden" id="personModal" name="person">
+      
+        <!-- Datum -->
+        <div class="mb-3 d-flex align-items-center">
+          <label for="date" class="form-label me-2 mb-0">Datum:</label>
+          <input type="date" id="date" name="datum" class="form-control w-50 ms-auto" required>
         </div>
-        <div class="col">
-          <label for="satz1_wdh" class="form-label">Satz 1 Wdh</label>
-          <input type="number" id="satz1_wdh" name="satz1_wdh" class="form-control">
-        </div>
-      </div>
 
-      <!-- Satz 2 -->
-      <div class="row mb-3">
-        <div class="col">
-          <label for="satz2_gew" class="form-label">Satz 2 Gewicht (kg)</label>
-          <input type="number" step="0.5" id="satz2_gew" name="satz2_gew" class="form-control">
+        <!-- Gym -->
+        <div class="mb-3 d-flex align-items-center">
+          <label for="gymModal" class="form-label me-2 mb-0">Gym</label>
+          <span id="gym-display" class="fw-bold me-2"></span>
+          <input type="text" id="gymModal" name="gym" class="form-control w-50 ms-auto">
         </div>
-        <div class="col">
-          <label for="satz2_wdh" class="form-label">Satz 2 Wdh</label>
-          <input type="number" id="satz2_wdh" name="satz2_wdh" class="form-control">
-        </div>
-      </div>
 
-      <!-- Satz 3 -->
-      <div class="row mb-3">
-        <div class="col">
-          <label for="satz3_gew" class="form-label">Satz 3 Gewicht (kg)</label>
-          <input type="number" step="0.5" id="satz3_gew" name="satz3_gew" class="form-control">
+        <!-- Gerät -->
+        <div class="mb-3 d-flex align-items-center">
+          <label for="geraet" class="form-label me-2 mb-0">Gerät</label>
+          <input type="text" id="geraet" name="geraet" class="form-control w-50 ms-auto" required>
         </div>
-        <div class="col">
-          <label for="satz3_wdh" class="form-label">Satz 3 Wdh</label>
-          <input type="number" id="satz3_wdh" name="satz3_wdh" class="form-control">
+
+        <!-- Sätze gesamt -->
+        <div class="mb-3 d-flex align-items-center">
+          <label for="saetze" class="form-label me-2 mb-0">Anzahl Sätze</label>
+          <input type="number" id="saetze" name="saetze" class="form-control w-50 ms-auto" min="1" max="5">
         </div>
-      </div>
 
-      <!-- Datum -->
-      <div class="mb-3">
-        <label for="date" class="form-label">Datum</label>
-        <input type="date" id="date" name="datum" class="form-control" required>
-      </div>
+        <!-- Satz 1 -->
+        <div id="satz1-block" class="mb-3">
+          <label class="form-label fw-bold">Satz 1</label>
+          <div class="row">
+            <div class="col">
+              <label for="satz1_gew" class="form-label small">Gewicht</label>
+              <input type="number" step="0.5" id="satz1_gew" name="satz1_gew" class="form-control">
+            </div>
+            <div class="col">
+              <label for="satz1_wdh" class="form-label small">Wdh</label>
+              <input type="number" id="satz1_wdh" name="satz1_wdh" class="form-control">
+            </div>
+          </div>
+        </div>
 
-      <!-- Submit -->
-      <button type="submit" class="btn btn-success mt-3">Speichern</button>
+        <!-- Satz 2 -->
+        <div id="satz2-block" class="mb-3">
+          <label class="form-label fw-bold">Satz 2</label>
+          <div class="row">
+            <div class="col">
+              <label for="satz1_gew" class="form-label small">Gewicht</label>
+              <input type="number" step="0.5" id="satz2_gew" name="satz2_gew" class="form-control">
+            </div>
+            <div class="col">
+              <label for="satz1_wdh" class="form-label small">Wdh</label>
+              <input type="number" id="satz2_wdh" name="satz2_wdh" class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <!-- Satz 3 -->
+        <div id="satz3-block" class="mb-3">
+          <label class="form-label fw-bold">Satz 3</label>
+          <div class="row">
+            <div class="col">
+              <label for="satz1_gew" class="form-label small">Gewicht</label>
+              <input type="number" step="0.5" id="satz3_gew" name="satz3_gew" class="form-control">
+            </div>
+            <div class="col">
+              <label for="satz1_wdh" class="form-label small">Wdh</label>
+              <input type="number" id="satz3_wdh" name="satz3_wdh" class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-success mt-3">Speichern</button>
     </form>
   </div>
 </div>

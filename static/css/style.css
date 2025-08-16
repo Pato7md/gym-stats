@@ -270,3 +270,8 @@ header h1 {
     padding: 0.4rem 0.75rem; /* weniger Innenabstand */
   }
 }
+
+
+.modal-content {
+  max-width: 350px; 
+}

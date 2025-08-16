@@ -22,9 +22,14 @@ for i, gid in enumerate(tab_gids):
     # Spalten bereinigen
     df.columns = [c.strip().lower().replace(" ", "_") for c in df.columns]
 
-    # Datum konvertieren, falls vorhanden
-    if "tmstmp" in df.columns:
-        df["tmstmp"] = pd.to_datetime(df["tmstmp"], errors='coerce')
+    # Datum konvertieren – egal ob "12.07.2025" oder ISO
+    if "timestamp" in df.columns:
+        df["timestamp"] = pd.to_datetime(
+            df["timestamp"],
+            errors='coerce',
+            dayfirst=True   # wichtig: 12.07.2025 = 12. Juli, nicht 7. Dezember
+        )
+
 
     # Tab-Name als Spalte hinzufügen
     df["tab_name"] = tab
