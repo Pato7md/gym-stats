@@ -155,9 +155,11 @@ def api_gym_plot():
     if not all([person, gym, start, end, metric]):
         return jsonify({'error': 'Fehlende Parameter'}), 400
 
-    geraete = get_geraete_options(df, person, gym, start, end) or []
+    df = load_data()
 
+    geraete = get_geraete_options(df, person, gym, start, end) or []
     filtered_df = get_filtered_data(df, person, gym, geraete, start, end)
+
     if filtered_df.empty:
         return ('', 204)
 
