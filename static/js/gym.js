@@ -158,6 +158,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Person-Dropdown separat behandeln (unabhängig vom DOM-Ort)
   if (personSelect) {
     personSelect.addEventListener('change', async () => {
+      document.getElementById("start").value = "";
+      document.getElementById("end").value   = "";
+      await fetchAndRender();
+    });
+  }
+  
+  const gymSelect = document.getElementById('gym');
+  if (gymSelect) {
+    gymSelect.addEventListener('change', async () => {
+      document.getElementById("start").value = "";
+      document.getElementById("end").value   = "";
       await fetchAndRender();
     });
   }

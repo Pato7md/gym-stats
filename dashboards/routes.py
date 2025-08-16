@@ -78,6 +78,12 @@ def api_gym_table():
     end    = request.args.get('end')
     geraete = request.args.getlist('geraete')
 
+    if not start or not end:
+        date_df = df[(df['person'] == person) & (df['gym'] == gym)].copy()
+        date_df['datum'] = pd.to_datetime(date_df['datum']).dt.date
+        start = date_df['datum'].min().isoformat() if not date_df.empty else None
+        end   = date_df['datum'].max().isoformat() if not date_df.empty else None
+
     if not all([person, gym, start, end]):
         return jsonify({'error': 'Fehlende Parameter'}), 400
     try:
