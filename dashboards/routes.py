@@ -6,7 +6,7 @@ import traceback
 from write_gymdata import insert_gym_entry
 from importlib import reload
 import dashboards.prepare_gymdata as prepare_gymdata
-
+from dashboards.prepare_persons import load_persons
 
 gym_bp = Blueprint('gym', __name__, template_folder='../../templates')
 df = load_data()
@@ -15,10 +15,10 @@ df = load_data()
 # Übergeordnete Route
 @gym_bp.route('/')
 def dashboard():
-    personen = sorted(df['person'].dropna().unique().tolist())
+    personen = load_persons()
     gyms = sorted(df['gym'].dropna().unique().tolist())
 
-    person = request.args.get('person', personen[1] if len(personen) > 1 else personen[0])
+    person = request.args.get('person', personen[0] if len(personen) > 1 else personen[0])
     gym    = request.args.get('gym', gyms[0] if gyms else '')
     start  = request.args.get('start', df['datum'].min().date().isoformat())
     end    = request.args.get('end', df['datum'].max().date().isoformat())

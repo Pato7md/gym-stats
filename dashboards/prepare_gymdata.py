@@ -4,10 +4,14 @@ from typing import Optional, Dict, Any
 from db import ENGINE
 
 def load_data():
-    query = 'SELECT * FROM gym_log'
+    query = """
+        SELECT g.*, p.name AS person
+        FROM gym_log g
+        LEFT JOIN persons p ON g.person_id = p.id
+    """
     df = pd.read_sql(query, ENGINE)
 
-    df.rename(columns={'tab_name': 'person', 'timestamp': 'datum'}, inplace=True)
+    df.rename(columns={'timestamp': 'datum'}, inplace=True)
     df['datum'] = pd.to_datetime(df['datum'], dayfirst=True, errors='coerce')
 
     for col in [f'satz{i}_gew' for i in [1, 2, 3]]:

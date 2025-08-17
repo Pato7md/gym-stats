@@ -18,12 +18,13 @@ def insert_gym_entry(*, person, gym, geraet, saetze, datum,
 
     sql = text("""
         INSERT INTO gym_log (
-            tab_name, gym, gerät, sätze, timestamp,
+            person_id, gym, gerät, sätze, timestamp,
             satz1_gew, satz1_wdh,
             satz2_gew, satz2_wdh,
             satz3_gew, satz3_wdh
         ) VALUES (
-            :person, :gym, :geraet, :saetze, :datum,
+            (SELECT id FROM persons WHERE name = :person),
+            :gym, :geraet, :saetze, :datum,
             :satz1_gew, :satz1_wdh,
             :satz2_gew, :satz2_wdh,
             :satz3_gew, :satz3_wdh
