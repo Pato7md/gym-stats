@@ -213,77 +213,73 @@ async function fetchAndRender(){
   if ($.fn.DataTable.isDataTable(tableEl)) $(tableEl).DataTable().clear().destroy();
   tableInstance = null;
 
-  const res = await fetch(`/api/gym-table?${buildParams()}`);
-  if(!res.ok){
+  try {
+    const res = await fetch(`/api/gym-table?${buildParams()}`);
+    if(!res.ok){
+      tbodyEl.innerHTML = '<tr><td colspan="99">Fehler beim Laden der Tabelle</td></tr>';
+    } else {
+      const data = await res.json();
+
+      // Tabelle einsetzen
+      tbodyEl.innerHTML = data.table_html;
+
+      // Start-/Enddatum nur setzen, wenn Werte vorhanden sind
+      if (data.min_date) document.getElementById("start").value = data.min_date;
+      if (data.max_date) document.getElementById("end").value = data.max_date;
+
+      const hasRows = !!tbodyEl.querySelector('tr');
+      const headerCount = document.querySelectorAll('#my-table thead th').length;
+      const validRowExists = [...tbodyEl.querySelectorAll('tr')]
+        .some(tr => tr.querySelectorAll('td').length === headerCount);
+
+      if (hasRows && validRowExists) {
+        tableInstance = $('#my-table').DataTable({
+          paging:false,  
+          info:false, 
+          searching:false, 
+          responsive:true, 
+          destroy:true,
+          scrollY:'208px', 
+          dom:'rt<"dt-bottom"l p>',
+          order: [[1, 'desc']],
+          columnDefs: [
+            {
+              targets: 2,
+              render: function (data, type) {
+                if (type === 'display' && data != null) {
+                  return parseInt(data).toLocaleString('de-DE');
+                }
+                return data;
+              }
+            },
+            {
+              targets: [3, 4],
+              render: function (data, type) {
+                if (type === 'display' && data != null) {
+                  return parseFloat(data).toLocaleString('de-DE', {
+                    minimumFractionDigits: 1,
+                    maximumFractionDigits: 1
+                  });
+                }
+                return data;
+              }
+            }
+          ]
+        });
+      } else {
+        console.warn('DataTables nicht initialisiert – unpassende Struktur');
+        document.getElementById('plot-container').innerHTML = '<p>Keine Geräte für diesen Zeitraum.</p>';
+      }
+    }
+  } catch(err) {
+    console.error("[table] Fehler:", err);
     tbodyEl.innerHTML = '<tr><td colspan="99">Fehler beim Laden der Tabelle</td></tr>';
-    // ...
-    return;
+  } finally {
+    // 🔹 wird **immer** ausgeführt, egal ob Fehler, leer oder Erfolg
+    await fetchAndRenderPlot();
+    await fetchAndRenderOverview();
   }
 
-  const data = await res.json();
-
-  // Tabelle einsetzen
-  tbodyEl.innerHTML = data.table_html;
-
-  // Start-/Enddatum nur setzen, wenn Werte vorhanden sind
-  if (data.min_date) document.getElementById("start").value = data.min_date;
-  if (data.max_date) document.getElementById("end").value = data.max_date;
-
-
-  const hasRows = !!tbodyEl.querySelector('tr');
-
-
-  // Zielbox leeren, damit keine Alt-Controls liegen bleiben
-  const bottomBox = document.getElementById('dt-controls-bottom');
-  if(bottomBox) bottomBox.innerHTML = '';
-
-  // DataTables neu initialisieren (nur wenn es Zeilen gibt)
-  const headerCount = document.querySelectorAll('#my-table thead th').length;
-  const validRowExists = [...tbodyEl.querySelectorAll('tr')]
-    .some(tr => tr.querySelectorAll('td').length === headerCount);
-  
-
-  if (hasRows && validRowExists) {
-    tableInstance = $('#my-table').DataTable({
-      paging:false,  
-      info:false, 
-      searching:false, 
-      responsive:true, 
-      destroy:true,
-      scrollY:'208px', 
-      dom:'rt<"dt-bottom"l p>',
-      order: [[1, 'desc']],
-      columnDefs: [
-        {
-          targets: 2,
-          render: function (data, type, row) {
-            if (type === 'display' && data != null) {
-              return parseInt(data).toLocaleString('de-DE');
-            }
-            return data;
-          }
-        },
-        {
-          targets: [3, 4],
-          render: function (data, type, row) {
-            if (type === 'display' && data != null) {
-              return parseFloat(data).toLocaleString('de-DE', {
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1
-              });
-            }
-            return data;
-          }
-        }
-      ]
-    });
-  } else {
-    console.warn('DataTables nicht initialisiert – unpassende Struktur');
-    document.getElementById('plot-container').innerHTML = '<p>Keine Geräte für diesen Zeitraum.</p>';
-  }
-
-  await fetchAndRenderPlot();
-  await fetchAndRenderOverview();
   markLongTextValues();
 }
 
