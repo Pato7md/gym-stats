@@ -12,7 +12,7 @@ def load_data():
     df = pd.read_sql(query, ENGINE)
 
     df.rename(columns={'timestamp': 'datum'}, inplace=True)
-    df['datum'] = pd.to_datetime(df['datum'], dayfirst=True, errors='coerce')
+    df['datum'] = pd.to_datetime(df['datum'], errors='coerce')
 
     for col in [f'satz{i}_gew' for i in [1, 2, 3]]:
         df[col] = (
@@ -52,7 +52,7 @@ def get_filtered_data(df, person, gym, geraete, start, end):
     end_dt = pd.to_datetime(end) + pd.Timedelta(days=1)
 
     return df[
-        (df['person'].str.lower() == person.lower()) &
+        (df['person'].str.casefold() == person.casefold()) &
         (df['gym'] == gym) &
         (df['gerät'].isin(geraete)) &
         (df['datum'] >= start_dt) &
@@ -123,20 +123,12 @@ def get_overview_stats(
       - Ø Besuche/Woche = Besuche / #Kalenderwochen im GEWÄHLTEN Zeitraum (Montag als Wochenstart)
       - Ø Geräte/Besuch = pro Tag distinct 'gerät', davon der Durchschnitt
       - Lieblingsgerät = Gerät mit den meisten Einträgen (Zeilen)
-      - Top Wdh/Gewicht = je Gerät: pro Tag mitteln, dann über Tage mitteln -> Top-1
     """
-    # Leeres Ergebnis für Edge-Cases
     empty = {
         "total_visits": 0,
-        "avg_visits_per_week": 0.0,
+        "avg_visits_per_week": 0.00,
         "avg_geraete_per_visit": 0.0,
         "lieblingsgeraet": None,
-        "top_wdh_geraet": None,
-        "top_wdh_value": None,
-        "top_gewicht_geraet": None,
-        "top_gewicht_value": None,
-        "avg_wdh_per_week": 0.0,      
-        "avg_volumen_per_week": 0.0      
     }
 
     if filtered_df is None or filtered_df.empty:
@@ -165,7 +157,7 @@ def get_overview_stats(
     # 4) Lieblingsgerät (meiste Einträge/Zeilen)
     if 'gerät' in df.columns and not df['gerät'].dropna().empty:
         counts = df['gerät'].value_counts()
-        # Bei Gleichstand alphabetisch erstes auswählen für deterministisches Verhalten
+        # Bei Gleichstand: alphabetisch erstes auswählen für deterministisches Verhalten
         max_count = counts.max()
         lieblings_candidates = sorted(counts[counts == max_count].index.tolist())
         lieblingsgeraet = lieblings_candidates[0] if lieblings_candidates else None
@@ -174,7 +166,7 @@ def get_overview_stats(
 
     return {
         "total_visits": int(total_visits),
-        "avg_visits_per_week": float(round(avg_visits_per_week, 2)),
-        "avg_geraete_per_visit": float(round(avg_geraete_per_visit, 2)),
+        "avg_visits_per_week": round(avg_visits_per_week, 2),
+        "avg_geraete_per_visit": round(avg_geraete_per_visit, 1),
         "lieblingsgeraet": lieblingsgeraet,
     }

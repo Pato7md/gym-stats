@@ -82,8 +82,8 @@ def api_gym_table():
 
     if not start or not end:
         date_df = pd.to_datetime(df.loc[(df['person'] == person) & (df['gym'] == gym), 'datum']).dt.date
-        start = date_df['datum'].min().isoformat() if not date_df.empty else None
-        end   = date_df['datum'].max().isoformat() if not date_df.empty else None
+        start = date_df.min().isoformat() if not date_df.empty else None
+        end = date_df.max().isoformat() if not date_df.empty else None
 
     if not all([person, gym, start, end]):
         return jsonify({'error': 'Fehlende Parameter'}), 400
