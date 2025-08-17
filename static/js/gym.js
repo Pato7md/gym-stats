@@ -44,6 +44,35 @@ function initWorkoutModal() {
   const openBtn = document.getElementById("openModalBtn");
   const closeBtn = document.getElementById("closeModalBtn");
 
+  const saetzeInput = document.getElementById("saetze");
+  const saetzeContainer = document.getElementById("saetze-container");
+
+  if (saetzeInput && saetzeContainer) {
+    saetzeInput.addEventListener("input", () => {
+      const count = parseInt(saetzeInput.value) || 0;
+      saetzeContainer.innerHTML = ""; // reset
+
+      for (let i = 1; i <= count; i++) {
+        saetzeContainer.innerHTML += `
+          <div class="mb-3">
+            <label class="form-label fw-bold">Satz ${i}</label>
+            <div class="row">
+              <div class="col">
+                <label for="satz${i}_gew" class="form-label small">Gewicht</label>
+                <input type="number" step="0.5" id="satz${i}_gew" name="satz${i}_gew" class="form-control">
+              </div>
+              <div class="col">
+                <label for="satz${i}_wdh" class="form-label small">Wdh</label>
+                <input type="number" id="satz${i}_wdh" name="satz${i}_wdh" class="form-control">
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    });
+  }
+
+
   if (openBtn) {
     openBtn.addEventListener("click", () => {
       const gymSelect = document.getElementById('gym');
@@ -79,18 +108,23 @@ function initWorkoutFormSubmit() {
   workoutForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const saetzeCount = parseInt(document.getElementById("saetze").value)
+    const saetze =  [];
+
+    for (let i = 1; i <= saetzeCount; i++) {
+      const gewicht = parseFloat(document.getElementById(`satz${i}_gew`)?.value) || null;
+      const wdh     = parseInt(document.getElementById(`satz${i}_wdh`)?.value) || null;  
+    
+      saetze.push({satz: i, gewicht, wdh});
+    }
+
     const formData = {
       person: document.getElementById("person-select-modal").value.trim(),
       gym: document.getElementById("gymModal").value.trim(),
       geraet: document.getElementById("geraet").value.trim(),
-      saetze: parseInt(document.getElementById("saetze").value) || null,
-      satz1_gew: parseFloat(document.getElementById("satz1_gew").value) || null,
-      satz1_wdh: parseInt(document.getElementById("satz1_wdh").value) || null,
-      satz2_gew: parseFloat(document.getElementById("satz2_gew").value) || null,
-      satz2_wdh: parseInt(document.getElementById("satz2_wdh").value) || null,
-      satz3_gew: parseFloat(document.getElementById("satz3_gew").value) || null,
-      satz3_wdh: parseInt(document.getElementById("satz3_wdh").value) || null,
-      datum: document.getElementById("date").value
+      saetze: saetzeCount,
+      datum: document.getElementById("date").value,
+      details: saetze
     };
 
     try {

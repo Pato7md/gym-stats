@@ -57,6 +57,8 @@
 /* === 4.1 OVERVIEW CARDS === */
   .card-body {display: flex; flex-direction: column;}
 
+  .card-body.compact {padding: 0.5rem;}
+  
   .ga-stat-title {color: #d0d0d0; font-size: 0.85rem; line-height: 1.2;}
 
   .ga-stat-value.long-text {font-size: clamp(0.8rem, 1.4vw, 1.3rem);}

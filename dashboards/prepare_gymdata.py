@@ -14,21 +14,26 @@ def load_data():
     df.rename(columns={'timestamp': 'datum'}, inplace=True)
     df['datum'] = pd.to_datetime(df['datum'], errors='coerce')
 
-    for col in [f'satz{i}_gew' for i in [1, 2, 3]]:
-        df[col] = (
-            df[col]
+    for i in range(1, 7):
+        df[f'satz{i}_gew'] = (
+            df[f'satz{i}_gew']
             .astype(str) 
             .str.replace(',', '.', regex=False)
             .str.extract(r'(\d+(?:\.\d+)?)')[0] 
             .astype(float)
         )
 
-    for i in [1, 2, 3]:
+        df[f'satz{i}_wdh'] = pd.to_numeric(df[f'satz{i}_wdh'], errors="coerce")
+
+
+    for i in range(1, 7):
         df[f'vol_satz{i}'] = df[f'satz{i}_gew'] * df[f'satz{i}_wdh']
 
+    df['vol_gesamt'] = df[[f'vol_satz{i}' for i in range(1, 7)]].sum(axis=1)
+
     df['vol_gesamt'] = df[[f'vol_satz{i}' for i in [1, 2, 3]]].sum(axis=1)
-    df['avg_gewicht'] = df[[f'satz{i}_gew' for i in [1, 2, 3]]].mean(axis=1)
-    df['avg_wdh'] = df[[f'satz{i}_wdh' for i in [1, 2, 3]]].mean(axis=1)
+    df['avg_gewicht'] = df[[f'satz{i}_gew' for i in range(1, 7)]].mean(axis=1)
+    df['avg_wdh'] = df[[f'satz{i}_wdh' for i in range(1, 7)]].mean(axis=1)
 
     return df
 

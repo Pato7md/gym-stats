@@ -183,18 +183,15 @@ def api_gym_insert():
             if field not in data or not data[field]:
                 return jsonify({"status": "error", "error": f"Fehlendes Feld: {field}"}), 400
 
+        saetze_details = data.get('details', [])
+
         new_id = insert_gym_entry(
             person=data['person'],
             gym=data.get('gym', ''),
             geraet=data['geraet'],
-            saetze=data.get("saetze"),
+            saetze=len(saetze_details),
             datum=data['datum'],
-            satz1_gew=data.get('satz1_gew'),
-            satz1_wdh=data.get('satz1_wdh'),
-            satz2_gew=data.get('satz2_gew'),
-            satz2_wdh=data.get('satz2_wdh'),
-            satz3_gew=data.get('satz3_gew'),
-            satz3_wdh=data.get('satz3_wdh'),
+            details=saetze_details
         )
 
         global df
