@@ -1,5 +1,4 @@
 let tableInstance = null;
-let originalFigData = [];
 
 
 // Hilfs-Funktion für alle 3 fetchAndRender Funktionen
