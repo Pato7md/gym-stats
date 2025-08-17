@@ -1,277 +1,164 @@
-:root {
-  --bg: #121212;
-  --bg-elev: #1e1e1e;
-  --text: #e0e0e0;
-  --text-strong: #fff;
-  --border: #444;
-  --main-green: #00695c;
-}
+/* === 1. BASE === */
+  :root {
+    --bg: #121212;
+    --bg-elev: #1e1e1e;
+    --text: #e0e0e0;
+    --text-strong: #fff;
+    --border: #444;
+    --main-green: #00695c;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    scroll-behavior: auto !important;
+    overflow-anchor: none !important;
+  }
+
+  label {color: var(--text-strong);}
+
+  .outer-wrapper {max-width: 55%; margin: 0 auto;}
+  @media (max-width: 1200px) {.outer-wrapper {max-width: 80%;}}
+  @media (max-width: 992px)  {.outer-wrapper {max-width: 95%;}}
+  @media (max-width: 650px)  {.outer-wrapper {max-width: 100%;}}
 
 
-html, body {
-  background: var(--bg);
-  color: var(--text);
-  scroll-behavior: auto !important;
-  overflow-anchor: none !important;
-}
+/* === 2. HEADER, TITEL === */
+  h1 {font-size: 2.2rem;  color: var(--text-strong);}
+  @media (max-width: 650px) {h1 {font-size: 1.4rem;}}
 
-.container-fluid.py-2.border-bottom.border-secondary {
-  background-color: #003d33; /* neutrales dunkleres Grau */
-}
-
-
-label {color: var(--text-strong);}
-
-.outer-wrapper {max-width: 55%; margin: 0 auto;}
-@media (max-width: 1200px) {.outer-wrapper {max-width: 80%;}}
-@media (max-width: 992px)  {.outer-wrapper {max-width: 95%;}}
-@media (max-width: 650px)  {.outer-wrapper {max-width: 100%;}}
-
-
-/* Zusammengeführter Header mit Person Dropdown */
-h1 {
-  font-size: 2.2rem;  
-  color: var(--text-strong);
-}
-@media (max-width: 650px) {h1 {
-    font-size: 1.4rem;
-}}
-
-header h1 {
-  margin: 0;                /* entfernt Standard-Margins */
-  line-height: 1.2;         /* Höhe des Textes kontrollieren */
-  display: flex;            /* falls nötig für Feintuning */
-  align-items: center;      /* Text vertikal mittig innerhalb der Zeile */
-}
-
-#person-form > span.text-white {
-  font-size: 1.3rem;
-  line-height: 1;
-}
-@media (max-width: 650.98px) {#person-form > span.text-white {
-  font-size: 0.8rem; 
-}}
-
-#person.form-select-sm {
-  font-size: 1.1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  height: auto;
-}
-@media (max-width: 650.98px) {#person.form-select-sm {
-    font-size: 0.7rem; 
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-}}
-
-
-/* Footer */
-.app-footer {
-  color: var(--text-strong);
-  background: #333;
-  padding: 10px;
-  text-align: center;
-  border-radius: .5rem;
-}
-@media (max-width: 650px) {.app-footer {
-    padding: 6px;
-    font-size: 0.85rem;
-}}
-
-
-
-/* Plot & Plot-Dropdown */
-#plot-container, #chart-container {
-  min-height: 420px;
-  background: var(--bg-elev);
-}
-
-.metric-floating {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  background: rgba(18,18,18,.75);
-  backdrop-filter: blur(4px);
-  border: 1px solid #333;
-  border-radius: 5px;
-  padding: 4px 6px;
-}
-
-.metric-floating .form-select-sm {
-  min-width: 170px;
-  background: var(--bg);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-
-/* Zwischen Überschriften H2*/
-.section-title { 
-  color: #e0f2f1 !important; /* helles, leicht grünliches Weiß */
-  background: linear-gradient(90deg, #004d40, #00695c); /* Dunkel-Petrol → Mittel-Petrol */
-  font-weight: 600 !important;
-  border-bottom: 2px solid #e8f5e9; /*weiße Unter-Linie*/
-  font-size: 1.5rem !important;
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
-}
-@media (max-width: 650.98px) {.section-title {
-    font-size: 1.1rem !important; 
-    padding: 0.2rem 0.3rem !important; 
-}}
-
-
-/* TABELLE */
-.table, .table th, .table td {
-  border-color: rgba(255, 255, 255, 0.04) !important; 
-}
-
-#my-table thead th .th-short { display: none !important; }
-#my-table thead th .th-long  { display: inline !important; }
-
-.dataTables_wrapper .dataTables_scrollHead thead th .th-short { 
-  display: none !important; 
-}
-.dataTables_wrapper .dataTables_scrollHead thead th .th-long  { 
-  display: inline !important; 
-}
-@media (max-width: 650px) {
-  #my-table thead th .th-long  { display: none !important; }
-  #my-table thead th .th-short { display: inline-block !important; font-weight: 600; }
-  .dataTables_wrapper .dataTables_scrollHead thead th .th-long  { display: none !important; }
-  .dataTables_wrapper .dataTables_scrollHead thead th .th-short { display: inline-block !important; font-weight: 600; }
-
-  #my-table {
-    font-size: 0.86rem; 
-}}
-
-
-
-/* Handy Spezifikation */
-/* DROPDOWNS/FILTER */
-@media (max-width: 650px) {
-  #filter-form {
+  header h1 {
+    margin: 0;
+    line-height: 1.2;
     display: flex;
-    gap: 0.5rem;
-    flex-wrap: nowrap;       /* alles in einer Zeile */
-    align-items: flex-end;   /* Felder unten bündig */
-    margin-bottom: 0rem !important;
+    align-items: center; 
   }
-  #filter-form .mb-3 {
-    flex: 1 1 0;              /* gleichmäßig aufteilen */
-    min-width: 0;             /* verhindert Überlaufen */
+
+  .header-bar {background-color: #003d33;}
+
+
+/* === 3. SECTION TITLES === */
+  .section-title { 
+    color: #e0f2f1 ;
+    background: linear-gradient(90deg, #004d40, #00695c);
+    font-weight: 600 ;
+    border-bottom: 2px solid #e8f5e9;
+    font-size: 1.5rem ;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+
+  @media (max-width: 650px) {.section-title {
+      font-size: 1.1rem; 
+      padding: 0.2rem 0.3rem; 
+  }}
+
+
+/* === 4.1 OVERVIEW CARDS === */
+  .card-body {display: flex; flex-direction: column;}
+
+  .ga-stat-title {color: #d0d0d0; font-size: 0.85rem; line-height: 1.2;}
+
+  .ga-stat-value.long-text {font-size: clamp(0.8rem, 1.4vw, 1.3rem);}
+
+  .ga-stat-value {
+    color: #ffffff;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    flex: 1; 
     display: flex;
-    flex-direction: column;   /* Label über Input */
-    margin-bottom: 0rem !important;
-  }
-  #filter-form .mb-3 .form-label {
-    margin-bottom: 0.1rem;
-    font-size: 0.85rem;
-    white-space: nowrap;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(1.6rem, 2.2vw, 2.3rem);
   }
 
-  #filter-form .mb-3 .form-control,
-  #filter-form .mb-3 .form-select {
-    width: 100%;
-    font-size: 0.85rem;
-    max-width: none;     
+
+/* === 4.2 TABELLEN === */
+  @media (max-width: 650px) {#my-table {
+      font-size: 0.86rem; 
+  }}
+
+
+/* === 4.3 PLOTS & CHARTS === */
+  #plot-container, #chart-container {
+    min-height: 420px;
+    background: var(--bg-elev);
   }
-}
 
 
-/* Handy Spezifikation */
-/* Karten Layout */
-@media (min-width: 1400px) {
-  .stat-card { flex: 0 0 16.66%; max-width: 16.66%; }
-}
-.card-body {
-  display: flex;
-  flex-direction: column;
-}
-.ga-stat-title {
-  color: #d0d0d0 !important;
-  font-size: 0.85rem;
-  line-height: 1.2;
-}
-.ga-stat-value {
-  color: #ffffff !important;
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
-  flex: 1; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: clamp(1.6rem, 2.2vw, 2.3rem);
-}
-.ga-stat-value.long-text {
-  font-size: clamp(0.8rem, 1.4vw, 1.3rem) !important;
-}
-
-
-/*Plot beschriftung HANDY*/
-@media (max-width: 576px) {
-  .plot-title .text-light {
-    font-size: 0.8rem; /* kleinerer Text */
+/* === 5. FILTER AUF HANDY === */
+  @media (max-width: 650px) {
+    #filter-form {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: nowrap;
+      align-items: flex-end;
+      margin-bottom: 0rem !important;
+    }
+    #filter-form .mb-3 {
+      flex: 1 1 0;
+      min-width: 0; 
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0rem !important;
+    }
+    #filter-form .mb-3 .form-label {
+      margin-bottom: 0.1rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    #filter-form .mb-3 .form-control, #filter-form .mb-3 .form-select {
+      width: 100%;
+      font-size: 0.85rem;
+      max-width: none;     
+    }
   }
-  .plot-title .form-select {
-    font-size: 0.8rem;       /* Schrift kleiner */
-    height: auto;            /* Höhe anpassen */
-    text-align: left;        /* Text linksbündig */
+
+
+/* === 6. MODAL === */
+  .modal:not(.fade) {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
   }
-}
-
-
-/*neuer css für ds modal */
-.modal:not(.fade) {
-  display: none;
-  position: fixed;
-  z-index: 1050;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5);
-}
-.modal-content {
-  background-color: var(--bg-elev);
-  margin: 5% auto;
-  padding: 20px;
-  width: 90%;
-  max-width: 500px;
-  border-radius: 8px;
-  color: var(--text);
-}
-.close-btn {
-  float: right;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-
-/*button selbst*/
-.btn-secondary {
-  background-color: #555; /* dunkleres Grau */
-  border-color: #555;
-  color: #fff;
-}
-
-.btn-secondary:hover {
-  background-color: #666; /* etwas heller beim Hover */
-  border-color: #666;
-}
-
-/* Mobile Button anpassen */
-@media (max-width: 650px) {
-  #openModalBtn {
-    font-size: 0.9rem;       /* kleinere Schrift */
-    padding: 0.4rem 0.75rem; /* weniger Innenabstand */
+  
+  .modal-content {
+    background-color: var(--bg-elev);
+    margin: 5% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 350px;
+    border-radius: 8px;
+    color: var(--text);
   }
-}
+
+  .close-btn {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
 
 
-.modal-content {
-  max-width: 350px; 
-}
+/* === 7. NEUER DATENSATZ BUTTON === */
+  .btn-secondary {background-color: #555; border-color: #555; color: #fff;}
+  .btn-secondary:hover {background-color: #666; border-color: #666;}
+
+  @media (max-width: 650px) {
+    #openModalBtn {font-size: 0.9rem; padding: 0.4rem 0.75rem;}
+  }
+
+
+/* === 8. FOOTER === */
+  .app-footer {
+    color: var(--text-strong);
+    background: #333;
+    padding: 10px;
+    text-align: center;
+    border-radius: .5rem;
+  }
+
+  @media (max-width: 650px) {.app-footer {padding: 6px; font-size: 0.85rem;}}
