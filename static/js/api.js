@@ -2,20 +2,7 @@ let tableInstance = null;
 let originalFigData = [];
 
 
-const debounce = (fn, wait = 150) => {
-    let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
-};
-  
-  
-function markLongTextValues() {
-    document.querySelectorAll('.ga-stat-value').forEach(el => {
-      const value = el.textContent.trim();
-      if (!/^\d+([.,]\d+)?$/.test(value)) {
-      el.classList.add('long-text');
-      }
-    });
-}
-
+// Hilfs-Funktion für alle 3 fetchAndRender Funktionen
 function buildParams({includeMetric=true}={}){
     const form = document.querySelector('#filter-form');
     const metricSelect = document.getElementById('metric');
@@ -38,7 +25,7 @@ function buildParams({includeMetric=true}={}){
 }
 
 
-async function fetchAndRenderOverview(){
+async function fetchAndRenderCards(){
     const container = document.getElementById('overview');
     if (!container) return;
   
@@ -56,6 +43,82 @@ async function fetchAndRenderOverview(){
       console.error('[overview] JS error:', e);
       container.innerHTML = '<div class="col-12"><p style="color:#f88;">Fehler beim Verarbeiten der Übersicht.</p></div>';
     }
+}
+
+
+async function fetchAndRenderTable(){
+    const tableEl = document.getElementById('my-table');
+    const tbodyEl = document.getElementById('table-body');
+  
+    if ($.fn.DataTable.isDataTable(tableEl)) $(tableEl).DataTable().clear().destroy();
+    tableInstance = null;
+  
+    try {
+      const res = await fetch(`/api/gym-table?${buildParams()}`);
+      if(!res.ok){
+        tbodyEl.innerHTML = '<tr><td colspan="99">Fehler beim Laden der Tabelle</td></tr>';
+      } else {
+        const data = await res.json();
+  
+        tbodyEl.innerHTML = data.table_html;
+  
+        if (data.min_date) document.getElementById("start").value = data.min_date;
+        if (data.max_date) document.getElementById("end").value = data.max_date;
+  
+        const hasRows = !!tbodyEl.querySelector('tr');
+        const headerCount = document.querySelectorAll('#my-table thead th').length;
+        const validRowExists = [...tbodyEl.querySelectorAll('tr')]
+          .some(tr => tr.querySelectorAll('td').length === headerCount);
+  
+        if (hasRows && validRowExists) {
+          tableInstance = $('#my-table').DataTable({
+            paging:false,  
+            info:false, 
+            searching:false, 
+            responsive:true, 
+            destroy:true,
+            scrollY:'208px', 
+            dom:'rt<"dt-bottom"l p>',
+            order: [[1, 'desc']],
+            columnDefs: [
+              {
+                targets: 2,
+                render: function (data, type) {
+                  if (type === 'display' && data != null) {
+                    return parseInt(data).toLocaleString('de-DE');
+                  }
+                  return data;
+                }
+              },
+              {
+                targets: [3, 4],
+                render: function (data, type) {
+                  if (type === 'display' && data != null) {
+                    return parseFloat(data).toLocaleString('de-DE', {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 1
+                    });
+                  }
+                  return data;
+                }
+              }
+            ]
+          });
+        } else {
+          console.warn('DataTables nicht initialisiert – unpassende Struktur');
+          document.getElementById('plot-container').innerHTML = '<p>Keine Geräte für diesen Zeitraum.</p>';
+        }
+      }
+    } catch(err) {
+      console.error("[table] Fehler:", err);
+      tbodyEl.innerHTML = '<tr><td colspan="99">Fehler beim Laden der Tabelle</td></tr>';
+    } 
+    document.querySelectorAll('.ga-stat-value').forEach(el => {
+        const value = el.textContent.trim();
+        if (!/^\d+([.,]\d+)?$/.test(value)) {
+        el.classList.add('long-text');
+        }
+      });
 }
 
 
@@ -130,105 +193,47 @@ async function fetchAndRenderPlot() {
 }
 
 
-export function initFilters() {
+export function fetchAndRenderAll() {
+    fetchAndRenderTable();
+    fetchAndRenderCards();
+    fetchAndRenderPlot();
+}
+
+
+export function initFilterRefresh() {
     const filterForm = document.querySelector('#filter-form');
     const metricSelect = document.getElementById('metric');
     const gymSelect = document.getElementById('gym');
   
-    window.addEventListener('resize', debounce(() => {
-      if (tableInstance) tableInstance.columns.adjust().responsive.recalc();
-    }, 150));
+    // Resize der Tabelle sauber steuern
+    window.addEventListener('resize', (() => {
+        let t;
+        return () => {
+        clearTimeout(t);
+        t = setTimeout(() => {
+            if (tableInstance) tableInstance.columns.adjust().responsive.recalc();
+        }, 150);
+        };
+    })());
   
+    // Wenn Start, Ende geändert wird: Tabelle refreshen
     if (filterForm) {
-      filterForm.querySelectorAll('#gym, #start, #end').forEach(el =>
-        el.addEventListener('change', fetchAndRender)
+      filterForm.querySelectorAll('#start, #end').forEach(el =>
+        el.addEventListener('change', fetchAndRenderTable)
       );
     }
-  
+
+    // Wenn Gym geändert wird: Alles refreshen
     if (gymSelect) {
       gymSelect.addEventListener('change', async () => {
         document.getElementById("start").value = "";
         document.getElementById("end").value   = "";
-        await fetchAndRender();
+        await fetchAndRenderAllAll();
       });
     }
   
+    // Wenn Plot Metrik geändert wird: Plot refreshen
     if (metricSelect) {
       metricSelect.addEventListener('change', fetchAndRenderPlot);
     }
-}
-
-
-export async function fetchAndRender(){
-    const tableEl = document.getElementById('my-table');
-    const tbodyEl = document.getElementById('table-body');
-  
-    if ($.fn.DataTable.isDataTable(tableEl)) $(tableEl).DataTable().clear().destroy();
-    tableInstance = null;
-  
-    try {
-      const res = await fetch(`/api/gym-table?${buildParams()}`);
-      if(!res.ok){
-        tbodyEl.innerHTML = '<tr><td colspan="99">Fehler beim Laden der Tabelle</td></tr>';
-      } else {
-        const data = await res.json();
-  
-        tbodyEl.innerHTML = data.table_html;
-  
-        if (data.min_date) document.getElementById("start").value = data.min_date;
-        if (data.max_date) document.getElementById("end").value = data.max_date;
-  
-        const hasRows = !!tbodyEl.querySelector('tr');
-        const headerCount = document.querySelectorAll('#my-table thead th').length;
-        const validRowExists = [...tbodyEl.querySelectorAll('tr')]
-          .some(tr => tr.querySelectorAll('td').length === headerCount);
-  
-        if (hasRows && validRowExists) {
-          tableInstance = $('#my-table').DataTable({
-            paging:false,  
-            info:false, 
-            searching:false, 
-            responsive:true, 
-            destroy:true,
-            scrollY:'208px', 
-            dom:'rt<"dt-bottom"l p>',
-            order: [[1, 'desc']],
-            columnDefs: [
-              {
-                targets: 2,
-                render: function (data, type) {
-                  if (type === 'display' && data != null) {
-                    return parseInt(data).toLocaleString('de-DE');
-                  }
-                  return data;
-                }
-              },
-              {
-                targets: [3, 4],
-                render: function (data, type) {
-                  if (type === 'display' && data != null) {
-                    return parseFloat(data).toLocaleString('de-DE', {
-                      minimumFractionDigits: 1,
-                      maximumFractionDigits: 1
-                    });
-                  }
-                  return data;
-                }
-              }
-            ]
-          });
-        } else {
-          console.warn('DataTables nicht initialisiert – unpassende Struktur');
-          document.getElementById('plot-container').innerHTML = '<p>Keine Geräte für diesen Zeitraum.</p>';
-        }
-      }
-    } catch(err) {
-      console.error("[table] Fehler:", err);
-      tbodyEl.innerHTML = '<tr><td colspan="99">Fehler beim Laden der Tabelle</td></tr>';
-    } finally {
-      await fetchAndRenderPlot();
-      await fetchAndRenderOverview();
-    }
-  
-    markLongTextValues();
 }

@@ -1,4 +1,4 @@
-import { fetchAndRender } from './api.js';
+import { fetchAndRenderAll } from './api.js';
 
 
 export function initPersonSelectModal() {
@@ -17,7 +17,7 @@ export function initPersonSelectModal() {
         alert("Bitte zuerst eine Person wählen.");
         return;
         }
-        await fetchAndRender();
+        await fetchAndRenderAll();
         personStartModal.hide();
     });
 }
@@ -121,7 +121,7 @@ export function initWorkoutFormSubmit() {
   
         if (data.status === "success") {
           modal.style.display = "none";
-          await fetchAndRender();
+          await fetchAndRenderAll();
         } else {
           alert("Fehler beim Speichern: " + (data.error || "unbekannt"));
         }
