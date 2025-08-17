@@ -9,6 +9,7 @@ export function initPersonSelectModal() {
     
     const confirmBtn = document.getElementById('confirm-person');
     const personSelectModal = document.getElementById('person-select-modal');
+    const welcomeUser = document.getElementById('welcome-user'); // <--- das hat dir gefehlt!
 
     personStartModal.show();
 
@@ -17,6 +18,11 @@ export function initPersonSelectModal() {
         alert("Bitte zuerst eine Person wählen.");
         return;
         }
+
+        if (welcomeUser) {
+          welcomeUser.textContent = "Welcome, " + personSelectModal.value;
+        }
+
         await fetchAndRenderAll();
         personStartModal.hide();
     });
