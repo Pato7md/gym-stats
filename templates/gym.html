@@ -112,5 +112,5 @@
 {% block scripts %}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" defer></script>
-  <script src="{{ url_for('static', filename='js/gym.js') }}" defer></script>
+  <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 {% endblock %}
