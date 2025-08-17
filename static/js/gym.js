@@ -11,160 +11,124 @@ const debounce = (fn, wait = 150) => {
 
 // Bindet alle Event-Listener, sobald DOM fertig geladen ist
 document.addEventListener('DOMContentLoaded', () => {
+  initWorkoutModal();        // Handling fürs Eingabe-Modal (inputModal)
+  initWorkoutFormSubmit();   // Form submit → POST an Flask
+  initFilters();             // Filter + Resize-Handling
+  initPersonSelectModal();   // Start-Personenauswahl
+});
 
-  // 🔹 Modal-Elemente referenzieren
+
+function initPersonSelectModal() {
+  const personStartModal = new bootstrap.Modal(document.getElementById('personModalStart'), {
+    backdrop: 'static',
+    keyboard: false
+  });
+  const confirmBtn = document.getElementById('confirm-person');
+  const personSelectModal = document.getElementById('person-select-modal');
+
+  personStartModal.show();
+
+  confirmBtn.addEventListener('click', async () => {
+    if (!personSelectModal.value) {
+      alert("Bitte zuerst eine Person wählen.");
+      return;
+    }
+    await fetchAndRender();
+    personStartModal.hide();
+  });
+}
+
+
+function initWorkoutModal() {
   const modal = document.getElementById("inputModal");
   const openBtn = document.getElementById("openModalBtn");
   const closeBtn = document.getElementById("closeModalBtn");
 
-  // Person & Gym automatisch ins Modal setzen
-  const headerPersonSelect = document.getElementById('person'); // im Header
-  const modalPersonDisplay = document.getElementById('person-display'); // nur Text
-  const modalPersonInput = document.getElementById('personModal'); // hidden input
-
-  const headerGymSelect = document.getElementById('gym'); // Dropdown im Filter
-  const modalGymDisplay = document.getElementById('gym-display'); // Anzeige im Modal
-  const modalGymInput = document.getElementById('gymModal'); // Hidden Input
-
-  
-  function updateModalPerson() {
-    if (headerPersonSelect && modalPersonDisplay && modalPersonInput) {
-      modalPersonDisplay.textContent = headerPersonSelect.value;
-      modalPersonInput.value = headerPersonSelect.value;
-    }
-  }
-  // Falls im Header gewechselt wird → Modal-Daten auch updaten
-  headerPersonSelect?.addEventListener('change', updateModalPerson);
-
-  // Öffnen
   if (openBtn) {
     openBtn.addEventListener("click", () => {
-      const headerPersonSelect = document.getElementById('person'); // Person-Dropdown  
-      const modalPersonDisplay = document.getElementById('person-display');
-      const modalPersonInput = document.getElementById('personModal');
-
-      const headerGymSelect = document.getElementById('gym');       // Gym-Dropdown
-      const modalGymInput = document.getElementById('gymModal');   // Eingabefeld im Modal
-  
+      const gymSelect = document.getElementById('gym');
+      const modalGymInput = document.getElementById('gymModal');
       const dateInput = document.getElementById('date');
 
-      if (headerPersonSelect && modalPersonDisplay && modalPersonInput) {
-        modalPersonDisplay.textContent = headerPersonSelect.value;
-        modalPersonInput.value = headerPersonSelect.value;
+      if (gymSelect && modalGymInput) {
+        modalGymInput.value = gymSelect.value;
       }
-
-      if (headerGymSelect && modalGymInput) {
-        modalGymInput.value = headerGymSelect.value; // Standardwert setzen
-      }
-
       if (dateInput && !dateInput.value) {
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today;
+        dateInput.value = new Date().toISOString().split('T')[0];
       }
 
       modal.style.display = "block";
     });
   }
 
-  // Schließen
   if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      modal.style.display = "none";
-    });
+    closeBtn.addEventListener("click", () => modal.style.display = "none");
   }
 
-  // Klick außerhalb schließt Modal
   window.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.style.display = "none";
+    if (e.target === modal) modal.style.display = "none";
+  });
+}
+
+function initWorkoutFormSubmit() {
+  const modal = document.getElementById("inputModal");
+  const workoutForm = document.getElementById("workoutForm");
+
+  if (!workoutForm) return;
+
+  workoutForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = {
+      person: document.getElementById("person-select-modal").value.trim(),
+      gym: document.getElementById("gymModal").value.trim(),
+      geraet: document.getElementById("geraet").value.trim(),
+      saetze: parseInt(document.getElementById("saetze").value) || null,
+      satz1_gew: parseFloat(document.getElementById("satz1_gew").value) || null,
+      satz1_wdh: parseInt(document.getElementById("satz1_wdh").value) || null,
+      satz2_gew: parseFloat(document.getElementById("satz2_gew").value) || null,
+      satz2_wdh: parseInt(document.getElementById("satz2_wdh").value) || null,
+      satz3_gew: parseFloat(document.getElementById("satz3_gew").value) || null,
+      satz3_wdh: parseInt(document.getElementById("satz3_wdh").value) || null,
+      datum: document.getElementById("date").value
+    };
+
+    try {
+      const res = await fetch("/api/gym-insert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+
+      if (data.status === "success") {
+        modal.style.display = "none";
+        await fetchAndRender();
+      } else {
+        alert("Fehler beim Speichern: " + (data.error || "unbekannt"));
+      }
+    } catch (err) {
+      console.error("Fehler beim Senden:", err);
+      alert("Verbindungsfehler beim Speichern");
     }
   });
+}
 
-  // 🔹 Form submit → POST an Flask
-  const workoutForm = document.getElementById("workoutForm");
-  if (workoutForm) {
-    workoutForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-  
-      const formData = {
-        person: document.getElementById("personModal").value.trim(),
-        gym: document.getElementById("gymModal").value.trim(),
-        geraet: document.getElementById("geraet").value.trim(),
-        saetze: parseInt(document.getElementById("saetze").value) || null,
-        satz1_gew: parseFloat(document.getElementById("satz1_gew").value) || null,
-        satz1_wdh: parseInt(document.getElementById("satz1_wdh").value) || null,
-        satz2_gew: parseFloat(document.getElementById("satz2_gew").value) || null,
-        satz2_wdh: parseInt(document.getElementById("satz2_wdh").value) || null,
-        satz3_gew: parseFloat(document.getElementById("satz3_gew").value) || null,
-        satz3_wdh: parseInt(document.getElementById("satz3_wdh").value) || null,
-        datum: document.getElementById("date").value
-      };
-  
-      try {
-        const res = await fetch("/api/gym-insert", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
-        });
-  
-        const data = await res.json();
-  
-        if (data.status === "success") {
-          modal.style.display = "none";
-  
-          // 🔹 Filterdaten anpassen, falls Datum außerhalb des Zeitraums liegt
-          const startInput = document.getElementById("start");
-          const endInput = document.getElementById("end");
-          const startVal = startInput.value;
-          const endVal = endInput.value;
-  
-          if (data.status === "success") {
-            modal.style.display = "none";
-            await fetchAndRender(); // keine direkte Manipulation von Start/End
-          } else {
-            alert("Fehler beim Speichern: " + (data.error || "unbekannt"));
-          }
-
-          // 🔹 Dashboard neu laden
-          fetchAndRender();
-        } else {
-          alert("Fehler beim Speichern: " + (data.error || "unbekannt"));
-        }
-      } catch (err) {
-        console.error("Fehler beim Senden:", err);
-        alert("Verbindungsfehler beim Speichern");
-      }
-    });
-  }
-
+function initFilters() {
   const filterForm = document.querySelector('#filter-form');
   const metricSelect = document.getElementById('metric');
-  const personSelect = document.getElementById('person'); // kann jetzt im Header liegen
+  const gymSelect = document.getElementById('gym');
 
-  // Recalc bei Resize
   window.addEventListener('resize', debounce(() => {
     if (tableInstance) tableInstance.columns.adjust().responsive.recalc();
   }, 150));
 
-  // Event-Listener für alle Filter im Formular (außer Person, falls außerhalb)
   if (filterForm) {
     filterForm.querySelectorAll('#gym, #start, #end').forEach(el =>
-      el.addEventListener('change', async () => {
-        await fetchAndRender();
-      })
+      el.addEventListener('change', fetchAndRender)
     );
   }
 
-  // Person-Dropdown separat behandeln (unabhängig vom DOM-Ort)
-  if (personSelect) {
-    personSelect.addEventListener('change', async () => {
-      document.getElementById("start").value = "";
-      document.getElementById("end").value   = "";
-      await fetchAndRender();
-    });
-  }
-  
-  const gymSelect = document.getElementById('gym');
   if (gymSelect) {
     gymSelect.addEventListener('change', async () => {
       document.getElementById("start").value = "";
@@ -173,28 +137,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Metrik-Dropdown → nur Plot neu laden
   if (metricSelect) {
     metricSelect.addEventListener('change', fetchAndRenderPlot);
   }
-
-  // Initial laden
-  fetchAndRender();
-  
-});
+}
 
 
 function buildParams({includeMetric=true}={}){
   const form = document.querySelector('#filter-form');
   const metricSelect = document.getElementById('metric');
-  const personSelect = document.getElementById('person');
+  const personSelectModal = document.getElementById('person-select-modal');
   const fd = new FormData(form);
   const params = new URLSearchParams();
 
   for(const [k,v] of fd.entries()) params.append(k, v);
 
-  if (personSelect && !params.has('person')) {
-    params.append('person', personSelect.value);
+  if (personSelectModal && !params.has('person')) {
+    params.append('person', personSelectModal.value);
   }
 
   if(includeMetric && metricSelect && !params.has('metric')) {

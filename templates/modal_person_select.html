@@ -1,0 +1,22 @@
+<!-- Person-Select Modal -->
+<div class="modal fade" id="personModalStart" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header">
+          <h5 class="modal-title">Hallo 👋 – bitte Account wählen</h5>
+        </div>
+        <div class="modal-body">
+          <select id="person-select-modal" class="form-select">
+            <option value="">-- Person wählen --</option>
+            {% for p in personen %}
+              <option value="{{ p }}">{{ p }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-person" class="btn btn-success">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

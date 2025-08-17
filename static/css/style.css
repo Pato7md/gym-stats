@@ -227,7 +227,7 @@ header h1 {
 
 
 /*neuer css für ds modal */
-.modal {
+.modal:not(.fade) {
   display: none;
   position: fixed;
   z-index: 1050;

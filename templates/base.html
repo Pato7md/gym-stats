@@ -24,15 +24,7 @@
     <!-- HEADER -->
     <div class="container-fluid py-2 border-bottom border-secondary">
       <header class="d-flex justify-content-between align-items-center flex-wrap">
-        <h1>Gym Dashboard</h1>
-        <form id="person-form" class="mb-0 d-flex align-items-center gap-2">
-          <span class="text-white">Welcome,</span>
-          <select id="person" name="person" class="form-select form-select-sm">
-            {% for p in personen %}
-              <option value="{{ p }}" {% if p == person %}selected{% endif %}>{{ p }}</option>
-            {% endfor %}
-          </select>
-        </form>        
+        <h1>Gym Dashboard</h1>      
       </header>
     </div>
 
@@ -51,10 +43,15 @@
     </div>
 
   </div> 
+  {% include "modal_person_select.html" %}
 
   <!-- Vendor JS -->
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  
+  <!-- Bootstrap Bundle mit Modal -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   {% block scripts %}{% endblock %}
 
 </body>
