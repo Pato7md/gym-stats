@@ -229,7 +229,7 @@ export function initFilterRefresh() {
       gymSelect.addEventListener('change', async () => {
         document.getElementById("start").value = "";
         document.getElementById("end").value   = "";
-        await fetchAndRenderAllAll();
+        await fetchAndRenderAll();
       });
     }
   
@@ -257,6 +257,7 @@ export function initAnalysisToggle() {
     sectionPlot.classList.add("d-none");
     btnTable.classList.add("active");
     btnPlot.classList.remove("active");
+    fetchAndRenderTable();
   });
 
   // ⚡ wichtig: DataTable redraw triggern
@@ -270,6 +271,7 @@ export function initAnalysisToggle() {
     sectionTable.classList.add("d-none");
     btnPlot.classList.add("active");
     btnTable.classList.remove("active");
+    fetchAndRenderPlot();
 
   // ⚡ wichtig: Plotly neu rendern
   if (document.getElementById("plot-container")) {
