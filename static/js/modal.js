@@ -143,7 +143,7 @@ export function initMenuModal() {
   const menuBtn = document.getElementById("menu-btn");
   const centralMenu = document.getElementById("central-menu");
 
-  if (!menuBtn || !centralMenu || !closeMenu) return;
+  if (!menuBtn || !centralMenu) return;
 
   menuBtn.addEventListener("click", () => {
     centralMenu.classList.remove("d-none");

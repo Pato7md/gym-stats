@@ -49,6 +49,7 @@ async function fetchAndRenderCards(){
 async function fetchAndRenderTable(){
     const tableEl = document.getElementById('my-table');
     const tbodyEl = document.getElementById('table-body');
+    const isMobile = window.innerWidth < 650;
   
     if ($.fn.DataTable.isDataTable(tableEl)) $(tableEl).DataTable().clear().destroy();
     tableInstance = null;
@@ -76,7 +77,7 @@ async function fetchAndRenderTable(){
             searching:false, 
             responsive:true, 
             destroy:true,
-            scrollY:'208px', 
+            scrollY: isMobile ? '270px' : '305px',
             dom:'rt<"dt-bottom"l p>',
             order: [[1, 'desc']],
             columnDefs: [
@@ -154,7 +155,7 @@ async function fetchAndRenderPlot() {
                 y: -0.3,  
                 xanchor: "center",
                 x: 0.5,
-                font: { size: 8 } 
+                font: { size: 7 } 
             }
             : {
                 orientation: "v", 
@@ -169,7 +170,8 @@ async function fetchAndRenderPlot() {
             pad: { t: 20, l: 10 },
             font: { size: isMobile ? 14 : 20 }
         },
-        margin: { t: 50, l: 50, r: 20, b: isMobile ? 100 : 50 } 
+        margin: { t: 50, l: 50, r: 20, b: isMobile ? 100 : 50 },
+        height: isMobile ? 350 : 330, 
         };
 
         const config = {
@@ -235,4 +237,49 @@ export function initFilterRefresh() {
     if (metricSelect) {
       metricSelect.addEventListener('change', fetchAndRenderPlot);
     }
+}
+
+
+export function initAnalysisToggle() {
+  const btnTable = document.getElementById("show-table");
+  const btnPlot = document.getElementById("show-plot");
+  const sectionTable = document.getElementById("section-table");
+  const sectionPlot = document.getElementById("section-plot");
+
+  if (!btnTable || !btnPlot || !sectionTable || !sectionPlot) {
+    console.warn("initAnalysisToggle: Elemente nicht gefunden.");
+    return;
+  }
+
+  btnTable.addEventListener("click", (e) => {
+    e.preventDefault();
+    sectionTable.classList.remove("d-none");
+    sectionPlot.classList.add("d-none");
+    btnTable.classList.add("active");
+    btnPlot.classList.remove("active");
+  });
+
+  // ⚡ wichtig: DataTable redraw triggern
+  if ($.fn.dataTable.isDataTable('#my-table')) {
+    $('#my-table').DataTable().columns.adjust().draw();
+  }
+
+  btnPlot.addEventListener("click", (e) => {
+    e.preventDefault();
+    sectionPlot.classList.remove("d-none");
+    sectionTable.classList.add("d-none");
+    btnPlot.classList.add("active");
+    btnTable.classList.remove("active");
+
+  // ⚡ wichtig: Plotly neu rendern
+  if (document.getElementById("plot-container")) {
+    Plotly.Plots.resize("plot-container");
+  }
+
+
+    const plotEl = document.getElementById("plot-container");
+    if (plotEl) {
+      Plotly.Plots.resize(plotEl);
+    }
+  });
 }
