@@ -62,9 +62,8 @@ async function fetchAndRenderTable(){
   
         tbodyEl.innerHTML = data.table_html;
   
-        if (data.min_date) document.getElementById("start").value = data.min_date;
-        if (data.max_date) document.getElementById("end").value = data.max_date;
-  
+        if (data.start) document.getElementById("start").value = data.start;
+        if (data.end)   document.getElementById("end").value   = data.end;
         const hasRows = !!tbodyEl.querySelector('tr');
         const headerCount = document.querySelectorAll('#my-table thead th').length;
         const validRowExists = [...tbodyEl.querySelectorAll('tr')]

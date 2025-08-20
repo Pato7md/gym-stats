@@ -96,7 +96,9 @@ def api_gym_table():
             return jsonify({
                     "table_html": render_template('partial_table.html', table=[]),
                     "min_date": None,
-                    "max_date": None
+                    "max_date": None,
+                    "start": start,
+                    "end": end
             })
 
         filtered_df['datum'] = pd.to_datetime(filtered_df['datum']).dt.date
@@ -133,7 +135,9 @@ def api_gym_table():
         return jsonify({
             "table_html": render_template('partial_table.html', table=table),
             "min_date": min_date,
-            "max_date": max_date
+            "max_date": max_date, 
+            "start": start,
+            "end": end
         })
         
     except Exception as e:

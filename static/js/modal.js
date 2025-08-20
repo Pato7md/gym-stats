@@ -138,3 +138,20 @@ export function initWorkoutFormSubmit() {
     });
 }
     
+
+export function initMenuModal() {
+  const menuBtn = document.getElementById("menu-btn");
+  const centralMenu = document.getElementById("central-menu");
+
+  if (!menuBtn || !centralMenu || !closeMenu) return;
+
+  menuBtn.addEventListener("click", () => {
+    centralMenu.classList.remove("d-none");
+  });
+
+  centralMenu.addEventListener("click", (e) => {
+    if (e.target === centralMenu) {
+      centralMenu.classList.add("d-none");
+    }
+  });
+}

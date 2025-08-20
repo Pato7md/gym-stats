@@ -164,3 +164,19 @@
   }
 
   @media (max-width: 650px) {.app-footer {padding: 6px; font-size: 0.85rem;}}
+
+
+/* === 9. MODAL MENU === */
+.dropdown-menu {
+  background-color: #222;   /* dunkler Hintergrund */
+  border: 1px solid #444;
+}
+
+.dropdown-item {
+  color: #fff;
+}
+
+.dropdown-item:hover {
+  background-color: #0d6efd;  /* Bootstrap Blau */
+  color: #fff;
+}
