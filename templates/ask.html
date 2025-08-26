@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>💬 Frag den Gym-Bot</h2>
+  
+  <form id="ask-form" class="mb-3">
+    <div class="input-group">
+      <input type="text" id="question" class="form-control" placeholder="Deine Frage..." required>
+      <button type="submit" class="btn btn-primary">Fragen</button>
+    </div>
+  </form>
+
+  <div id="answer-box" class="alert alert-secondary d-none"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById("ask-form").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const q = document.getElementById("question").value.trim();
+  if (!q) return;
+
+  // WICHTIG: Anfrage an /api/ask, nicht /ask
+  const res = await fetch("{{ url_for('gym.api_ask') }}", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({question: q})
+  });
+
+  const data = await res.json();
+  const box = document.getElementById("answer-box");
+
+  if (data.answer) {
+    box.classList.remove("d-none", "alert-danger");
+    box.classList.add("alert-success");
+    box.innerHTML = `<b>Antwort:</b> ${data.answer}`;
+  } else {
+    box.classList.remove("d-none", "alert-success");
+    box.classList.add("alert-danger");
+    box.innerHTML = `Fehler: ${data.error || 'Unbekannt'}`;
+  }
+});
+</script>
+{% endblock %}

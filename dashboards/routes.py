@@ -6,6 +6,7 @@ from importlib import reload
 from write_gymdata import insert_gym_entry
 from dashboards.prepare_persons import load_persons
 import dashboards.prepare_gymdata as prepare_gymdata
+import requests
 
 gym_bp = Blueprint('gym', __name__, template_folder='../../templates')
 df = prepare_gymdata.load_data()
@@ -207,3 +208,31 @@ def api_gym_insert():
     except Exception as e:
         traceback.print_exc()
         return jsonify({"status": "error", "error": str(e)}), 500
+
+
+@gym_bp.route('/ask')
+def ask_page():
+    return render_template('ask.html')
+
+@gym_bp.route('/api/ask', methods=['POST'])
+def api_ask():
+    """
+    Nimmt eine Frage entgegen, leitet sie an den RAG-Service weiter
+    und gibt die Antwort zurück.
+    """
+    try:
+        data = request.get_json()
+        question = data.get("question", "")
+
+        if not question:
+            return jsonify({"error": "Keine Frage übergeben"}), 400
+
+        # Anfrage an den RAG-Service weiterleiten
+        rag_url = "http://127.0.0.1:5001/ask"
+        resp = requests.post(rag_url, json={"question": question})
+
+        # Antwort von dort zurückgeben
+        return jsonify(resp.json()), resp.status_code
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
